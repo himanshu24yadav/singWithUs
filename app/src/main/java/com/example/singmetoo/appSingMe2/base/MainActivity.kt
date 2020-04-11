@@ -1,7 +1,9 @@
-package com.example.singmetoo
+package com.example.singmetoo.appSingMe2.base
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.singmetoo.R
+import com.example.singmetoo.testing.SampleRoomFragment
 
 class MainActivity : AppCompatActivity() {
 
