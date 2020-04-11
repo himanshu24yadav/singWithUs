@@ -1,4 +1,7 @@
 package com.example.singmetoo.appSingMe2.base
 
-class ApplicationClass {
+import android.app.Application
+
+class CustomApplicationClass : Application() {
+
 }
