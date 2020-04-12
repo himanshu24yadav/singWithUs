@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "220644535017",
+    "firebase_url": "https://singmetoo-3f5b4.firebaseio.com",
+    "project_id": "singmetoo-3f5b4",
+    "storage_bucket": "singmetoo-3f5b4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:220644535017:android:a015fdb8d5367285f89e78",
+        "android_client_info": {
+          "package_name": "com.example.singmetoo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "220644535017-cf7tba1949bc4q40rkrfdmfg1o0f8i5j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7FyeGi3UoLVcV88LG-0_G-qLqIxCwy2o"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "220644535017-cf7tba1949bc4q40rkrfdmfg1o0f8i5j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="black">#000</color>
+    <color name="white">#FFF</color>
+    <color name="base_app_icon_color">#ffa500</color>
 </resources>
