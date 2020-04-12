@@ -1,23 +1,19 @@
 package com.example.singmetoo.appSingMe2.mLogin
 
-import android.content.Context
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.View
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
-import com.example.singmetoo.databinding.LayoutLoginScreenBinding
+import com.example.singmetoo.databinding.LoginLayoutActivityBinding
 
 class LoginActivity : AppCompatActivity(){
 
-    private lateinit var mLayoutBinding: LayoutLoginScreenBinding
+    private lateinit var mLayoutBinding: LoginLayoutActivityBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLayoutBinding = DataBindingUtil.setContentView(this,R.layout.layout_login_screen)
+        mLayoutBinding = DataBindingUtil.setContentView(this,R.layout.login_layout_activity)
 
         initObjects()
         initViews()
