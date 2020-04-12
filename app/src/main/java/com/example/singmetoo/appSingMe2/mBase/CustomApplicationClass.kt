@@ -1,4 +1,4 @@
-package com.example.singmetoo.appSingMe2.base
+package com.example.singmetoo.appSingMe2.mBase
 
 import android.app.Application
 
