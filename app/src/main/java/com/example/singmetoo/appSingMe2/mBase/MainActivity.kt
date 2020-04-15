@@ -1,13 +1,23 @@
 package com.example.singmetoo.appSingMe2.mBase
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.singmetoo.R
+import com.example.singmetoo.appSingMe2.mUtils.AppUtil
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        init()
+    }
+
+    private fun init() {
+        initToolbar()
+    }
+
+    private fun initToolbar() {
+        title = "Hi ${AppUtil.getFirstName(mUserInfo.userName)}"
     }
 }

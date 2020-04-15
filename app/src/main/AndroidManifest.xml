@@ -17,6 +17,10 @@
         </activity>
 
         <activity
+            android:name=".appSingMe2.mBase.BaseActivity">
+        </activity>
+
+        <activity
             android:name=".appSingMe2.mLogin.LoginActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>

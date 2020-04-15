@@ -1,34 +1,130 @@
 package com.example.singmetoo.appSingMe2.mLogin
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.animation.AnimationUtils
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
+import com.example.singmetoo.appSingMe2.mBase.BaseActivity
+import com.example.singmetoo.appSingMe2.mBase.MainActivity
+import com.example.singmetoo.appSingMe2.mUtils.AppConstants
+import com.example.singmetoo.appSingMe2.mUtils.AppUtil
+import com.example.singmetoo.appSingMe2.mUtils.fetchString
 import com.example.singmetoo.databinding.LoginLayoutActivityBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 
-class LoginActivity : AppCompatActivity(){
+class LoginActivity : BaseActivity() {
 
     private lateinit var mLayoutBinding: LoginLayoutActivityBinding
+    private var googleSignInClient: GoogleSignInClient? = null
+    private var firebaseAuth: FirebaseAuth? = null
+    private var currentUser: FirebaseUser? = null
+    private val tag: String = "LoginActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mLayoutBinding = DataBindingUtil.setContentView(this,R.layout.login_layout_activity)
+        mLayoutBinding = DataBindingUtil.setContentView(this, R.layout.login_layout_activity)
 
         initObjects()
         initViews()
         initListeners()
     }
 
-    private fun initViews() {
-        mLayoutBinding.getStartedTv.startAnimation(AnimationUtils.loadAnimation(this,R.anim.anim_fade_in))
-    }
-
-    private fun initListeners() {
-
+    override fun onStart() {
+        super.onStart()
+        currentUser = firebaseAuth?.currentUser
+        updateUI()
     }
 
     private fun initObjects() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(this.fetchString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
 
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        firebaseAuth = FirebaseAuth.getInstance()
+    }
+
+    private fun initViews() {
+        mLayoutBinding.getStartedTv.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_fade_in))
+        mLayoutBinding.baseAppIcon.startAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_fade_in))
+    }
+
+    private fun initListeners() {
+        mLayoutBinding.googleSignBtn.setOnClickListener {
+            if(currentUser == null) {
+                val signInIntent = googleSignInClient?.signInIntent
+                startActivityForResult(signInIntent, AppConstants.RC_SIGN_IN)
+            } else {
+                AppUtil.showToast(this,"Signed in failed")
+            }
+        }
+
+        mLayoutBinding.skipText.setOnClickListener {
+            moveToMainActivity()
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            AppConstants.RC_SIGN_IN -> {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                try {
+                    // Google Sign In was successful, authenticate with Firebase
+                    val account = task.getResult(ApiException::class.java)
+                    firebaseAuthWithGoogle(account!!)
+                } catch (e: ApiException) {
+                    // Google Sign In failed, update UI appropriately
+                    AppUtil.showToast(this, "Signed in failed")
+                }
+            }
+        }
+    }
+
+    private fun firebaseAuthWithGoogle(account: GoogleSignInAccount) {
+        val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+        firebaseAuth?.signInWithCredential(credential)?.addOnCompleteListener(this) { task ->
+            if (task.isSuccessful) {
+                // Sign in success, update UI with the signed-in user's information
+                currentUser = firebaseAuth?.currentUser
+                updateUI()
+            } else {
+                AppUtil.showToast(this, "Signed in failed")
+            }
+        }
+    }
+
+    private fun updateUI() {
+        if(currentUser !=null){
+            AppUtil.showToast(this,"signed in with ${currentUser!!.email}")
+            storeUserInfoDetails()
+            moveToMainActivity()
+        }
+    }
+
+    private fun storeUserInfoDetails() {
+        mUserInfo.userName = currentUser?.displayName
+        mUserInfo.userEmail = currentUser?.email
+        mUserInfo.isUserLoggedIn = true
+    }
+
+    private fun moveToMainActivity(){
+        Handler().postDelayed({
+            val intent = Intent(this,MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            startActivity(intent)
+        },2000)
     }
 }
