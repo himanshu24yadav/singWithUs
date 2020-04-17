@@ -8,7 +8,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/home_frag_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize"
+            android:layout_height="@dimen/toolbar_height"
             android:background="@drawable/bg_base_gradient"
             android:elevation="4dp"
             android:paddingTop="5dp"

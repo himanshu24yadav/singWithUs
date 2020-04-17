@@ -23,7 +23,9 @@
             android:background="@color/white"
             app:itemHorizontalPadding="32dp"
             app:itemIconPadding="32dp"
+            app:itemIconSize="18dp"
             app:itemTextAppearance="@style/nav_text_appearance"
+            app:itemIconTint="@color/black"
             app:headerLayout="@layout/nav_header_main"
             app:menu="@menu/activity_main_drawer" />
 
