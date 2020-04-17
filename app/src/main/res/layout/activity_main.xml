@@ -20,14 +20,27 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@color/white"
+            android:background="@drawable/bg_base_gradient"
+            app:headerLayout="@layout/nav_header_main"
             app:itemHorizontalPadding="32dp"
             app:itemIconPadding="32dp"
             app:itemIconSize="18dp"
+            app:itemIconTint="@color/white"
             app:itemTextAppearance="@style/nav_text_appearance"
-            app:itemIconTint="@color/black"
-            app:headerLayout="@layout/nav_header_main"
-            app:menu="@menu/activity_main_drawer" />
+            app:menu="@menu/activity_main_drawer">
+
+            <LinearLayout
+                android:id="@+id/nav_bar_bootom_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="vertical">
+
+                <include layout="@layout/nav_bottom_layout" />
+
+            </LinearLayout>
+
+        </com.google.android.material.navigation.NavigationView>
 
     </androidx.drawerlayout.widget.DrawerLayout>
 

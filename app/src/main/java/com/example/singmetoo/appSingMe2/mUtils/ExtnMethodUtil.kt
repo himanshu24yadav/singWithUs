@@ -1,6 +1,7 @@
 package com.example.singmetoo.appSingMe2.mUtils
 
 import android.content.Context
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 
@@ -15,4 +16,8 @@ fun FragmentManager.addFragment(fragment:Fragment,container:Int,backStackName:St
     else {
         this.beginTransaction().add(container,fragment).addToBackStack(backStackName).commit()
     }
+}
+
+fun TextView.setProfileName(username:String?) {
+    this.text = "Hi ${AppUtil.getFirstName(username)}"
 }

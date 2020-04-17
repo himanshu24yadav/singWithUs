@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mUtils.AppUtil
+import com.example.singmetoo.appSingMe2.mUtils.setProfileName
 import com.example.singmetoo.databinding.LayoutHomeFragmentBinding
 
 class HomeFragment : BaseFragment() {
@@ -42,7 +43,7 @@ class HomeFragment : BaseFragment() {
         (activity as? AppCompatActivity)?.supportActionBar?.setDisplayShowTitleEnabled(false)
         (activity as? AppCompatActivity)?.supportActionBar?.title = ""
         (activity as? AppCompatActivity)?.supportActionBar?.subtitle = ""
-        mLayoutBinding.toolbarTitle.text = "Hi ${AppUtil.getFirstName(mUserInfo.userName)}"
+        mLayoutBinding.toolbarTitle.setProfileName(mUserInfo.userName)
         setToolbarProfileImage()
     }
 

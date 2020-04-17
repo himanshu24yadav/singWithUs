@@ -2,6 +2,7 @@ package com.example.singmetoo.appSingMe2.mBase.view
 
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
@@ -12,8 +13,11 @@ import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
 import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mHome.HomeFragment
+import com.example.singmetoo.appSingMe2.mUtils.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.addFragment
+import com.example.singmetoo.appSingMe2.mUtils.setProfileName
 import com.example.singmetoo.databinding.ActivityMainBinding
+import com.example.singmetoo.databinding.NavHeaderMainBinding
 
 class MainActivity : BaseActivity(), CommonBaseInterface {
 
@@ -47,10 +51,28 @@ class MainActivity : BaseActivity(), CommonBaseInterface {
         actionBarDrawerToggle = ActionBarDrawerToggle(this, mLayoutBinding.drawerLayout, R.string.navigation_drawer_open, R.string.navigation_drawer_open)
         actionBarDrawerToggle?.let { mLayoutBinding.drawerLayout.addDrawerListener(it) }
         mLayoutBinding.navView.setNavigationItemSelectedListener(drawerManager)
+        setNavHeaderView()
     }
 
     private fun initOpenHomeFragment() {
         supportFragmentManager.addFragment(HomeFragment(),R.id.main_activity_container)
+    }
+
+    private fun setNavHeaderView() {
+        val headerLayoutBinding: NavHeaderMainBinding? = NavHeaderMainBinding.bind(mLayoutBinding.navView.getHeaderView(0))
+
+        //profile name
+        headerLayoutBinding?.navProfileName?.setProfileName(mUserInfo.userName)
+
+        //profile pic
+        if(!AppUtil.checkIsNotNull(mUserInfo.userProfilePicUrl)){
+            headerLayoutBinding?.navNonProfileImgRl?.visibility = View.VISIBLE
+            headerLayoutBinding?.navNonProfileImg?.text = "${mUserInfo.userName?.get(0)}"
+            headerLayoutBinding?.navProfilePic?.visibility = View.GONE
+        } else {
+            headerLayoutBinding?.navNonProfileImgRl?.visibility = View.GONE
+            headerLayoutBinding?.navProfilePic?.visibility = View.VISIBLE
+        }
     }
 
     override fun onBackPressed() {
