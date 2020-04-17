@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
@@ -22,6 +23,7 @@ class HomeFragment : BaseFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         mLayoutBinding = DataBindingUtil.inflate(inflater,R.layout.layout_home_fragment,container,false)
         return mLayoutBinding.root
     }
@@ -32,7 +34,27 @@ class HomeFragment : BaseFragment() {
     }
 
     private fun init() {
+        initToolbar()
+    }
 
+    private fun initToolbar() {
+        (activity as? AppCompatActivity)?.setSupportActionBar(mLayoutBinding.homeFragToolbar)
+        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayShowTitleEnabled(false)
+        (activity as? AppCompatActivity)?.supportActionBar?.title = ""
+        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = ""
+        mLayoutBinding.toolbarTitle.text = "Hi ${AppUtil.getFirstName(mUserInfo.userName)}"
+        setToolbarProfileImage()
+    }
+
+    private fun setToolbarProfileImage() {
+        if(!AppUtil.checkIsNotNull(mUserInfo.userProfilePicUrl)){
+            mLayoutBinding.toolbarNonProfileImgRl.visibility = View.VISIBLE
+            mLayoutBinding.toolbarProfileImg.visibility = View.GONE
+            mLayoutBinding.toolbarNonProfileImg.text = "${mUserInfo.userName?.get(0)}"
+        } else {
+            mLayoutBinding.toolbarNonProfileImgRl.visibility = View.GONE
+            mLayoutBinding.toolbarProfileImg.visibility = View.VISIBLE
+        }
     }
 
     fun onBackPressed() {

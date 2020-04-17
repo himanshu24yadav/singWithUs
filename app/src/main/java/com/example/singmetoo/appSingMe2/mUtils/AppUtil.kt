@@ -15,6 +15,10 @@ class AppUtil {
            firstName = name?.let { name.substring(0,name.lastIndexOf(' ')) }
            return firstName
         }
+
+        fun checkIsNotNull(str:String?):Boolean {
+            return str!=null && !"".equals(str,ignoreCase = false) && !"null".equals(str,ignoreCase = false)
+        }
     }
 
 }

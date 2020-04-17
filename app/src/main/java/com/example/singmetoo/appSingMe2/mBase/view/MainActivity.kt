@@ -40,11 +40,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface {
     }
 
     private fun initObj() {
-        drawerManager =
-            DrawerManager(
-                this,
-                mLayoutBinding.drawerLayout
-            )
+        drawerManager = DrawerManager(this, mLayoutBinding.drawerLayout)
     }
 
     private fun initNavBar() {
