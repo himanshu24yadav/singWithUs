@@ -6,4 +6,5 @@
     <color name="black">#000</color>
     <color name="white">#FFF</color>
     <color name="base_app_icon_color">#ffa500</color>
+    <color name="navigation_view_color">#DCD9D5</color>
 </resources>

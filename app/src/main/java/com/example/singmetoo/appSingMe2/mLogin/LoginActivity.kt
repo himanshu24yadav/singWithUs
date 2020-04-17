@@ -6,8 +6,8 @@ import android.os.Handler
 import android.view.animation.AnimationUtils
 import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
-import com.example.singmetoo.appSingMe2.mBase.BaseActivity
-import com.example.singmetoo.appSingMe2.mBase.MainActivity
+import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
+import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
 import com.example.singmetoo.appSingMe2.mUtils.AppConstants
 import com.example.singmetoo.appSingMe2.mUtils.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.fetchString
@@ -117,12 +117,14 @@ class LoginActivity : BaseActivity() {
     private fun storeUserInfoDetails() {
         mUserInfo.userName = currentUser?.displayName
         mUserInfo.userEmail = currentUser?.email
+        mUserInfo.userId = currentUser?.uid
         mUserInfo.isUserLoggedIn = true
     }
 
     private fun moveToMainActivity(){
         Handler().postDelayed({
-            val intent = Intent(this,MainActivity::class.java)
+            val intent = Intent(this,
+                MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             startActivity(intent)
         },2000)

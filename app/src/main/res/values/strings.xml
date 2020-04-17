@@ -3,4 +3,14 @@
     <string name="get_started_text">\"Sing with us\"</string>
     <string name="app_moto_text">Bang That Beat</string>
     <string name="skip_text">Skip</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="menu_home">Home</string>
+    <string name="menu_your_music">Your Music</string>
+    <string name="menu_playlist">Playlist</string>
+    <string name="menu_about">About</string>
+    <string name="menu_item_other">Other</string>
+    <string name="menu_item_login">Login</string>
+    <string name="menu_item_logout">Logout</string>
 </resources>

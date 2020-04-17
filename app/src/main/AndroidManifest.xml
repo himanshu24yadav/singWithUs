@@ -7,17 +7,18 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".appSingMe2.mBase.CustomApplicationClass"
+        android:name=".appSingMe2.mBase.view.CustomApplicationClass"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".appSingMe2.mBase.MainActivity">
+            android:name=".appSingMe2.mBase.view.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
-            android:name=".appSingMe2.mBase.BaseActivity">
+            android:name=".appSingMe2.mBase.util.BaseActivity">
         </activity>
 
         <activity

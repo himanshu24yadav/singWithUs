@@ -1,4 +1,4 @@
-package com.example.singmetoo.appSingMe2.mBase
+package com.example.singmetoo.appSingMe2.mBase.view
 
 import android.app.Application
 import com.google.firebase.FirebaseApp

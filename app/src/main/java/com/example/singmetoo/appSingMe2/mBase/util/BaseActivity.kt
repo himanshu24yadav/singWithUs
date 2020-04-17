@@ -1,4 +1,4 @@
-package com.example.singmetoo.appSingMe2.mBase
+package com.example.singmetoo.appSingMe2.mBase.util
 
 import androidx.appcompat.app.AppCompatActivity
 import com.example.singmetoo.appSingMe2.mLogin.AppUserInfo
