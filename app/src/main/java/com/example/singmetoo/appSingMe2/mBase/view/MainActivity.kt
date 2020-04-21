@@ -65,14 +65,8 @@ class MainActivity : BaseActivity(), CommonBaseInterface {
         headerLayoutBinding?.navProfileName?.setProfileName(mUserInfo.userName)
 
         //profile pic
-        if(!AppUtil.checkIsNotNull(mUserInfo.userProfilePicUrl)){
-            headerLayoutBinding?.navNonProfileImgRl?.visibility = View.VISIBLE
-            headerLayoutBinding?.navNonProfileImg?.text = "${mUserInfo.userName?.get(0)}"
-            headerLayoutBinding?.navProfilePic?.visibility = View.GONE
-        } else {
-            headerLayoutBinding?.navNonProfileImgRl?.visibility = View.GONE
-            headerLayoutBinding?.navProfilePic?.visibility = View.VISIBLE
-        }
+        headerLayoutBinding?.profilePhotoUrl = "${mUserInfo.userName?.get(0)}"
+        headerLayoutBinding?.hasUserProfilePhoto = AppUtil.checkIsNotNull(mUserInfo.userProfilePicUrl)
     }
 
     override fun onBackPressed() {
