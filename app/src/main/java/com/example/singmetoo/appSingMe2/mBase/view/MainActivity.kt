@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.interfaces.CommonBaseInterface
+import com.example.singmetoo.appSingMe2.mBase.interfaces.NavigationDrawerInterface
 import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
 import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
@@ -19,7 +20,7 @@ import com.example.singmetoo.appSingMe2.mUtils.setProfileName
 import com.example.singmetoo.databinding.ActivityMainBinding
 import com.example.singmetoo.databinding.NavHeaderMainBinding
 
-class MainActivity : BaseActivity(), CommonBaseInterface {
+class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterface {
 
     private lateinit var mLayoutBinding: ActivityMainBinding
     private var actionBarDrawerToggle:ActionBarDrawerToggle? = null
@@ -61,12 +62,13 @@ class MainActivity : BaseActivity(), CommonBaseInterface {
     private fun setNavHeaderView() {
         val headerLayoutBinding: NavHeaderMainBinding? = NavHeaderMainBinding.bind(mLayoutBinding.navView.getHeaderView(0))
 
-        //profile name
+        //set profile name using extension method (setProfileName)
         headerLayoutBinding?.navProfileName?.setProfileName(mUserInfo.userName)
 
-        //profile pic
+        //setting binding variables
         headerLayoutBinding?.profilePhotoUrl = "${mUserInfo.userName?.get(0)}"
         headerLayoutBinding?.hasUserProfilePhoto = AppUtil.checkIsNotNull(mUserInfo.userProfilePicUrl)
+        headerLayoutBinding?.navBarCallback = this
     }
 
     override fun onBackPressed() {
@@ -104,5 +106,10 @@ class MainActivity : BaseActivity(), CommonBaseInterface {
 
     override fun isDrawerOpen() : Boolean{
         return mLayoutBinding.drawerLayout.isDrawerOpen(GravityCompat.START)
+    }
+
+    override fun onProfileClick(view:View) {
+        mLayoutBinding.drawerLayout.closeDrawer(GravityCompat.START)
+        AppUtil.showToast(this,"onProfileClick")
     }
 }
