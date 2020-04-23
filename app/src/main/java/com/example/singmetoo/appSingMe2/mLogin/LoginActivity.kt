@@ -115,10 +115,12 @@ class LoginActivity : BaseActivity() {
     }
 
     private fun storeUserInfoDetails() {
-        mUserInfo.userName = currentUser?.displayName
-        mUserInfo.userEmail = currentUser?.email
-        mUserInfo.userId = currentUser?.uid
-        mUserInfo.isUserLoggedIn = true
+        mUserInfo.apply {
+            userName = currentUser?.displayName
+            userEmail = currentUser?.email
+            userId = currentUser?.uid
+            isUserLoggedIn = true
+        }
     }
 
     private fun moveToMainActivity(){

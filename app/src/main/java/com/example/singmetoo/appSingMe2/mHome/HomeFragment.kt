@@ -36,6 +36,14 @@ class HomeFragment : BaseFragment() {
 
     private fun init() {
         initToolbar()
+        initView()
+    }
+
+    private fun initView() {
+        mLayoutBinding.userInfo = mUserInfo
+        mLayoutBinding.button.setOnClickListener {
+            mContext?.let { AppUtil.showToast(it,mUserInfo.userName!!) }
+        }
     }
 
     private fun initToolbar() {
