@@ -1,18 +1,18 @@
 package com.example.singmetoo.appSingMe2.mBase.view
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.interfaces.CommonBaseInterface
 import com.example.singmetoo.appSingMe2.mBase.interfaces.NavigationDrawerInterface
-import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
 import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
+import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
 import com.example.singmetoo.appSingMe2.mHome.HomeFragment
 import com.example.singmetoo.appSingMe2.mUtils.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.addFragment
@@ -39,8 +39,8 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         initOpenHomeFragment()
     }
 
-    override fun onPostCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onPostCreate(savedInstanceState, persistentState)
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
         actionBarDrawerToggle?.syncState()
     }
 
@@ -69,6 +69,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         headerLayoutBinding?.profilePhotoUrl = "${mUserInfo.userName?.get(0)}"
         headerLayoutBinding?.hasUserProfilePhoto = AppUtil.checkIsNotNull(mUserInfo.userProfilePicUrl)
         headerLayoutBinding?.navBarCallback = this
+        headerLayoutBinding?.userInfo = mUserInfo
     }
 
     override fun onBackPressed() {

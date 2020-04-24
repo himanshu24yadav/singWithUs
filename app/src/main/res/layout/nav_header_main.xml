@@ -4,6 +4,7 @@
     <data>
         <variable name="hasUserProfilePhoto" type="Boolean"/>
         <variable name="profilePhotoUrl" type="String"/>
+        <variable name="userInfo" type="com.example.singmetoo.appSingMe2.mLogin.AppUserInfo" />
         <variable
             name="navBarCallback"
             type="com.example.singmetoo.appSingMe2.mBase.interfaces.NavigationDrawerInterface" />
@@ -50,7 +51,8 @@
             android:id="@+id/nav_profile_pic"
             android:layout_width="54dp"
             android:layout_height="54dp"
-            android:src="@drawable/ic_base_icon"
+            app:profileImageUrl="@{userInfo.userProfilePicUrl}"
+            app:errorImage="@{@drawable/ic_base_icon}"
             android:visibility="@{hasUserProfilePhoto ? View.VISIBLE : View.GONE}"
             app:civ_border_color="@color/white"
             app:civ_border_width="2dp"

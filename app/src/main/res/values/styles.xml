@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -17,6 +18,9 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="color">@android:color/white</item>
+    </style>
 
     <style name="AppTextAppearance">
         <item name="android:textColor">@color/black</item>
@@ -31,6 +35,7 @@
     <style name="toolbar_title_text_appearance" parent="AppTextAppearance">
         <item name="android:textSize"> @dimen/toolbar_title_text_size </item>
         <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginTop">2dp</item>
     </style>
 
 </resources>

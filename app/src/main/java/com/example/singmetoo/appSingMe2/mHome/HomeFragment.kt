@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
+import com.example.singmetoo.appSingMe2.mBase.interfaces.CommonBaseInterface
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mUtils.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.setProfileName
@@ -41,16 +42,12 @@ class HomeFragment : BaseFragment() {
 
     private fun initView() {
         mLayoutBinding.userInfo = mUserInfo
-        mLayoutBinding.button.setOnClickListener {
-            mContext?.let { AppUtil.showToast(it,mUserInfo.userName!!) }
-        }
     }
 
     private fun initToolbar() {
         (activity as? AppCompatActivity)?.setSupportActionBar(mLayoutBinding.homeFragToolbar)
-        (activity as? AppCompatActivity)?.supportActionBar?.setDisplayShowTitleEnabled(false)
-        (activity as? AppCompatActivity)?.supportActionBar?.title = ""
-        (activity as? AppCompatActivity)?.supportActionBar?.subtitle = ""
+        setDefaultToolbar(true)
+        mLayoutBinding.homeFragToolbar.setNavigationOnClickListener(navigationDrawerListener())
         mLayoutBinding.toolbarTitle.setProfileName(mUserInfo.userName)
         setToolbarProfileImage()
     }
