@@ -1,4 +1,4 @@
-package com.example.singmetoo.appSingMe2.mHome.adapter
+package com.example.singmetoo.appSingMe2.mUtils
 
 import android.graphics.Rect
 import android.view.View

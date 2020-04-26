@@ -8,12 +8,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.singmetoo.R
-import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mHome.adapter.HomeAdapter
-import com.example.singmetoo.appSingMe2.mHome.adapter.SpaceItemDecoration
+import com.example.singmetoo.appSingMe2.mUtils.SpaceItemDecoration
 import com.example.singmetoo.appSingMe2.mHome.interfaces.HomeItemsInterface
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
 import com.example.singmetoo.appSingMe2.mUtils.*
