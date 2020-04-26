@@ -13,7 +13,7 @@
             android:title="@string/menu_your_music" />
 
         <item
-            android:id="@+id/nav_playlist"
+            android:id="@+id/nav_item_playlist"
             android:icon="@drawable/ic_menu_playlist"
             android:title="@string/menu_playlist" />
     </group>

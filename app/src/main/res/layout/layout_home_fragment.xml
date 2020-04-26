@@ -3,6 +3,9 @@
 
     <data>
         <variable name="userInfo" type="com.example.singmetoo.appSingMe2.mLogin.AppUserInfo" />
+        <variable name="hasUserProfilePhoto" type="Boolean"/>
+        <variable name="profilePhotoUrl" type="String"/>
+        <import type="android.view.View"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +16,7 @@
             android:id="@+id/home_frag_toolbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/toolbar_height"
-            android:background="@drawable/bg_base_gradient"
+            android:background="@android:color/transparent"
             android:elevation="4dp"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
@@ -31,6 +34,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     style="@style/toolbar_title_text_appearance"
+                    android:visibility="gone"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent">
@@ -41,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
-                    android:visibility="gone"
+                    android:visibility="@{hasUserProfilePhoto ? View.GONE : View.VISIBLE}"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
@@ -52,6 +56,7 @@
                         android:layout_height="28dp"
                         android:textAllCaps="true"
                         android:textColor="@color/black"
+                        android:text="@{profilePhotoUrl}"
                         android:textSize="14sp"
                         android:gravity="center"
                         android:background="@drawable/bg_circular_shape">
@@ -66,8 +71,8 @@
                     android:layout_marginEnd="16dp"
                     app:profileImageUrl="@{userInfo.userProfilePicUrl}"
                     app:errorImage="@{@drawable/ic_base_icon}"
+                    android:visibility="@{hasUserProfilePhoto ? View.VISIBLE : View.GONE}"
                     app:civ_border_width="1dp"
-                    android:visibility="gone"
                     app:civ_border_color="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -81,9 +86,23 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/home_frag_content_cl"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_frag_toolbar">
+
+            <include layout="@layout/layout_home_background"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homeRV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

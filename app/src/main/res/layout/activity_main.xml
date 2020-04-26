@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:background="@drawable/bg_base_gradient"
+            android:background="@drawable/bg_home_background"
             app:headerLayout="@layout/nav_header_main"
             app:itemHorizontalPadding="32dp"
             app:itemIconPadding="32dp"

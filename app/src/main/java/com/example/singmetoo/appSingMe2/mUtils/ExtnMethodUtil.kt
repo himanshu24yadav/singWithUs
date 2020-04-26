@@ -9,6 +9,10 @@ fun Context.fetchString(stringId:Int) : String {
     return this.resources.getString(stringId)
 }
 
+fun Context.fetchDimen(dimenId:Int) : Int {
+    return this.resources.getDimensionPixelSize(dimenId)
+}
+
 fun FragmentManager.addFragment(fragment:Fragment,container:Int,backStackName:String? = null) {
     if(backStackName == null){
         this.beginTransaction().add(container,fragment).commit()
