@@ -10,9 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
-import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
 import com.example.singmetoo.appSingMe2.mHome.adapter.HomeAdapter
-import com.example.singmetoo.appSingMe2.mUtils.SpaceItemDecoration
 import com.example.singmetoo.appSingMe2.mHome.interfaces.HomeItemsInterface
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
 import com.example.singmetoo.appSingMe2.mUtils.*

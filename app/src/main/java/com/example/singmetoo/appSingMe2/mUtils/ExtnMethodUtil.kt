@@ -4,24 +4,40 @@ import android.content.Context
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
+
 
 fun Context.fetchString(stringId:Int) : String {
-    return this.resources.getString(stringId)
+    return resources.getString(stringId)
 }
 
 fun Context.fetchDimen(dimenId:Int) : Int {
-    return this.resources.getDimensionPixelSize(dimenId)
+    return resources.getDimensionPixelSize(dimenId)
 }
 
-fun FragmentManager.addFragment(fragment:Fragment,container:Int,backStackName:String? = null) {
-    if(backStackName == null){
-        this.beginTransaction().add(container,fragment).commit()
+fun FragmentManager.addFragment(fragment:Fragment,container:Int,fragmentTag:String = AppConstants.DEFAULT_FRAGMENT_TAG,addToBackStack:Boolean = true) {
+    if(!addToBackStack){
+        beginTransaction().add(container,fragment,fragmentTag).commit()
     }
     else {
-        this.beginTransaction().add(container,fragment).addToBackStack(backStackName).commit()
+        beginTransaction().add(container,fragment,fragmentTag).addToBackStack(fragmentTag).commit()
+    }
+}
+
+fun FragmentManager.activeFragment() : BaseFragment? {
+    if (backStackEntryCount == 0) {
+        return null
+    }
+    val tag: String? = getBackStackEntryAt(backStackEntryCount- 1).name
+    return (findFragmentByTag(tag) as BaseFragment)
+}
+
+fun FragmentManager.clearBackStack(){
+    for (count in 0 until backStackEntryCount){
+        popBackStack()
     }
 }
 
 fun TextView.setProfileName(username:String?) {
-    this.text = "Hi ${AppUtil.getFirstName(username)}"
+    text = "Hi ${AppUtil.getFirstName(username)}"
 }

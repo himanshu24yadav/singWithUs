@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
+import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
+import com.example.singmetoo.appSingMe2.mUtils.NavigationHelper
 import com.example.singmetoo.databinding.LayoutMusicLibraryFragmentBinding
 
 class MusicLibraryFragment : BaseFragment() {
@@ -34,6 +36,13 @@ class MusicLibraryFragment : BaseFragment() {
 
     private fun init() {
         initToolbar()
+        initListeners()
+    }
+
+    private fun initListeners() {
+        mLayoutBinding.toolbarHomeIcon.setOnClickListener {
+            NavigationHelper.openHomeFragment((mContext as? MainActivity)?.supportFragmentManager)
+        }
     }
 
     private fun initToolbar() {

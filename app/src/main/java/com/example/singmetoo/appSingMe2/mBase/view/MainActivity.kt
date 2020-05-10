@@ -14,6 +14,7 @@ import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
 import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
 import com.example.singmetoo.appSingMe2.mMusicLibrary.MusicLibraryFragment
+import com.example.singmetoo.appSingMe2.mUtils.AppConstants
 import com.example.singmetoo.appSingMe2.mUtils.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.addFragment
 import com.example.singmetoo.appSingMe2.mUtils.setProfileName
@@ -56,12 +57,14 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
         //to show hamburger menu on each fragment
         supportFragmentManager.addOnBackStackChangedListener {
-            actionBarDrawerToggle?.syncState()
+            if(supportFragmentManager.backStackEntryCount > 0) {
+                actionBarDrawerToggle?.syncState()
+            }
         }
     }
 
     private fun initOpenHomeFragment() {
-        supportFragmentManager.addFragment(HomeFragment(),R.id.main_activity_container)
+        supportFragmentManager.addFragment(fragment = HomeFragment(),container = R.id.main_activity_container,fragmentTag = AppConstants.HOME_FRAGMENT_TAG)
     }
 
     private fun setNavHeaderView() {

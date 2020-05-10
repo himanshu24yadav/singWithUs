@@ -14,7 +14,7 @@ class DrawerManager(var mContext: Context?, var drawerLayout: DrawerLayout) : Na
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_item_home -> { NavigationHelper.openHomeFragment() }
+            R.id.nav_item_home -> { NavigationHelper.openHomeFragment((mContext as? MainActivity)?.supportFragmentManager) }
 
             R.id.nav_item_your_music -> { NavigationHelper.openYourMusicFragment((mContext as? MainActivity)?.supportFragmentManager) }
 

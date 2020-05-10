@@ -3,14 +3,20 @@ package com.example.singmetoo.appSingMe2.mUtils
 import androidx.fragment.app.FragmentManager
 import com.example.singmetoo.CustomApplicationClass
 import com.example.singmetoo.R
+import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
 import com.example.singmetoo.appSingMe2.mMusicLibrary.MusicLibraryFragment
 import kotlinx.android.synthetic.main.layout_home_fragment.view.*
 
 class NavigationHelper {
     companion object {
 
-        fun openHomeFragment(){
-            AppUtil.showToast(CustomApplicationClass.applicationContext(),"openHomeFragment")
+        fun openHomeFragment(supportFragmentManager: FragmentManager?){
+            supportFragmentManager?.activeFragment().let {
+                if(it == null || it !is HomeFragment){
+                    supportFragmentManager?.clearBackStack()
+                    supportFragmentManager?.addFragment(fragment = HomeFragment(),container = R.id.main_activity_container,fragmentTag = AppConstants.HOME_FRAGMENT_TAG)
+                }
+            }
         }
 
         fun openRecentFragment(){
@@ -18,7 +24,11 @@ class NavigationHelper {
         }
 
         fun openYourMusicFragment(supportFragmentManager: FragmentManager?) {
-            supportFragmentManager?.addFragment(MusicLibraryFragment(),R.id.main_activity_container,"Music")
+            supportFragmentManager?.activeFragment().let {
+                if (it == null || it !is MusicLibraryFragment) {
+                    supportFragmentManager?.addFragment(fragment = MusicLibraryFragment(),container = R.id.main_activity_container,fragmentTag = AppConstants.MUSIC_LIBRARY_FRAGMENT_TAG)
+                }
+            }
         }
 
         fun openPlaylistFragment(){
