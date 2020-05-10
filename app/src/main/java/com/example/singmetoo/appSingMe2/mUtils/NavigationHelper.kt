@@ -1,6 +1,10 @@
 package com.example.singmetoo.appSingMe2.mUtils
 
+import androidx.fragment.app.FragmentManager
 import com.example.singmetoo.CustomApplicationClass
+import com.example.singmetoo.R
+import com.example.singmetoo.appSingMe2.mMusicLibrary.MusicLibraryFragment
+import kotlinx.android.synthetic.main.layout_home_fragment.view.*
 
 class NavigationHelper {
     companion object {
@@ -13,8 +17,8 @@ class NavigationHelper {
             AppUtil.showToast(CustomApplicationClass.applicationContext(),"openRecentFragment")
         }
 
-        fun openYourMusicFragment(){
-            AppUtil.showToast(CustomApplicationClass.applicationContext(),"openYourMusicFragment")
+        fun openYourMusicFragment(supportFragmentManager: FragmentManager?) {
+            supportFragmentManager?.addFragment(MusicLibraryFragment(),R.id.main_activity_container,"Music")
         }
 
         fun openPlaylistFragment(){

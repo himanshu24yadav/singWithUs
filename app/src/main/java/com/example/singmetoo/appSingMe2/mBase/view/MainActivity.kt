@@ -13,6 +13,7 @@ import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
 import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
+import com.example.singmetoo.appSingMe2.mMusicLibrary.MusicLibraryFragment
 import com.example.singmetoo.appSingMe2.mUtils.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.addFragment
 import com.example.singmetoo.appSingMe2.mUtils.setProfileName
@@ -52,6 +53,11 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         actionBarDrawerToggle?.let { mLayoutBinding.drawerLayout.addDrawerListener(it) }
         mLayoutBinding.navView.setNavigationItemSelectedListener(drawerManager)
         setNavHeaderView()
+
+        //to show hamburger menu on each fragment
+        supportFragmentManager.addOnBackStackChangedListener {
+            actionBarDrawerToggle?.syncState()
+        }
     }
 
     private fun initOpenHomeFragment() {

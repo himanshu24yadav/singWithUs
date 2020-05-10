@@ -10,6 +10,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
+import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
 import com.example.singmetoo.appSingMe2.mHome.adapter.HomeAdapter
 import com.example.singmetoo.appSingMe2.mUtils.SpaceItemDecoration
 import com.example.singmetoo.appSingMe2.mHome.interfaces.HomeItemsInterface
@@ -69,7 +70,6 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
         (activity as? AppCompatActivity)?.setSupportActionBar(mLayoutBinding.homeFragToolbar)
         setDefaultToolbar(true)
         mLayoutBinding.homeFragToolbar.setNavigationOnClickListener(navigationDrawerListener())
-        mLayoutBinding.toolbarTitle.setProfileName(mUserInfo.userName)
     }
 
     private fun setHomeAdapter() {
@@ -88,7 +88,7 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
     override fun openSelectedScreen(view: View?,itemModel: HomeContentModel?) {
         itemModel?.let {
             when(itemModel.title) {
-                mContext?.fetchString(R.string.home_item_music_title) -> { NavigationHelper.openYourMusicFragment() }
+                mContext?.fetchString(R.string.home_item_music_title) -> { NavigationHelper.openYourMusicFragment(getActivityFragmentManager()) }
                 mContext?.fetchString(R.string.home_item_playlists_title) -> { NavigationHelper.openPlaylistFragment() }
                 mContext?.fetchString(R.string.home_item_radio_title) -> { NavigationHelper.openRadioFragment() }
                 mContext?.fetchString(R.string.home_item_recents_title) -> { NavigationHelper.openRecentFragment() }

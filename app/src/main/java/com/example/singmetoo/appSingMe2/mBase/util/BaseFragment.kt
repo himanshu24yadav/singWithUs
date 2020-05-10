@@ -4,7 +4,10 @@ import android.content.Context
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.interfaces.CommonBaseInterface
+import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
 import com.example.singmetoo.appSingMe2.mLogin.AppUserInfo
 
 open class BaseFragment : Fragment() {
@@ -32,5 +35,9 @@ open class BaseFragment : Fragment() {
                 else it.openDrawer()
             }
         }
+    }
+
+    fun getActivityFragmentManager() : FragmentManager?{
+        return (activity as? MainActivity)?.supportFragmentManager
     }
 }
