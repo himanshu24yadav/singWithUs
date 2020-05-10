@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 
-
 fun Context.fetchString(stringId:Int) : String {
     return resources.getString(stringId)
 }
