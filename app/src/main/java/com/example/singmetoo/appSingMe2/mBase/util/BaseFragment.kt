@@ -36,7 +36,7 @@ open class BaseFragment : Fragment() {
         }
     }
 
-    fun getActivityFragmentManager() : FragmentManager?{
+    fun activityFragmentManager() : FragmentManager?{
         return (activity as? MainActivity)?.supportFragmentManager
     }
 }

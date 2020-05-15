@@ -86,7 +86,7 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
     override fun openSelectedScreen(view: View?,itemModel: HomeContentModel?) {
         itemModel?.let {
             when(itemModel.title) {
-                mContext?.fetchString(R.string.home_item_music_title) -> { NavigationHelper.openYourMusicFragment(getActivityFragmentManager()) }
+                mContext?.fetchString(R.string.home_item_music_title) -> { NavigationHelper.openYourMusicFragment(activityFragmentManager()) }
                 mContext?.fetchString(R.string.home_item_playlists_title) -> { NavigationHelper.openPlaylistFragment() }
                 mContext?.fetchString(R.string.home_item_radio_title) -> { NavigationHelper.openRadioFragment() }
                 mContext?.fetchString(R.string.home_item_recents_title) -> { NavigationHelper.openRecentFragment() }
