@@ -1,11 +1,10 @@
-package com.example.singmetoo.appSingMe2.mUtils
+package com.example.singmetoo.appSingMe2.mUtils.helpers
 
 import androidx.fragment.app.FragmentManager
 import com.example.singmetoo.CustomApplicationClass
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
 import com.example.singmetoo.appSingMe2.mMusicLibrary.MusicLibraryFragment
-import kotlinx.android.synthetic.main.layout_home_fragment.view.*
 
 class NavigationHelper {
     companion object {

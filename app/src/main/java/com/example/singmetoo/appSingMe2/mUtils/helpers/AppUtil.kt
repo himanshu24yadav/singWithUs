@@ -1,4 +1,4 @@
-package com.example.singmetoo.appSingMe2.mUtils
+package com.example.singmetoo.appSingMe2.mUtils.helpers
 
 import android.content.Context
 import android.widget.Toast

@@ -5,12 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.example.singmetoo.appSingMe2.mBase.pojo.SongModel
+import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.dbHelper.daos.DaoSongsFromDevice
 import com.example.singmetoo.dbHelper.daos.DaoTestingUser
 import com.example.singmetoo.testing.TestingUserModel
 
-@Database (entities = [TestingUserModel::class,SongModel::class],version = 2)
+@Database (entities = [TestingUserModel::class, SongModel::class],version = 2)
 @TypeConverters(DBTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

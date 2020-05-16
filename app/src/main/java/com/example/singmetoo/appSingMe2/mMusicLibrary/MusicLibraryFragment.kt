@@ -10,7 +10,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
-import com.example.singmetoo.appSingMe2.mUtils.NavigationHelper
+import com.example.singmetoo.appSingMe2.mUtils.helpers.NavigationHelper
 import com.example.singmetoo.databinding.LayoutMusicLibraryFragmentBinding
 
 class MusicLibraryFragment : BaseFragment() {

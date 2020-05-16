@@ -1,4 +1,4 @@
-package com.example.singmetoo.appSingMe2.mUtils
+package com.example.singmetoo.appSingMe2.mUtils.helpers
 
 import android.graphics.drawable.Drawable
 import android.widget.FrameLayout

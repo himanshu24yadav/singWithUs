@@ -1,4 +1,4 @@
-package com.example.singmetoo.appSingMe2.mUtils
+package com.example.singmetoo.appSingMe2.mUtils.helpers
 
 import android.content.Context
 import android.widget.TextView
@@ -14,7 +14,7 @@ fun Context.fetchDimen(dimenId:Int) : Int {
     return resources.getDimensionPixelSize(dimenId)
 }
 
-fun FragmentManager.addFragment(fragment:Fragment,container:Int,fragmentTag:String = AppConstants.DEFAULT_FRAGMENT_TAG,addToBackStack:Boolean = true) {
+fun FragmentManager.addFragment(fragment:Fragment, container:Int, fragmentTag:String = AppConstants.DEFAULT_FRAGMENT_TAG, addToBackStack:Boolean = true) {
     if(!addToBackStack){
         beginTransaction().add(container,fragment,fragmentTag).commit()
     }

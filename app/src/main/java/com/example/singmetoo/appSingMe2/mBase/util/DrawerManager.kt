@@ -6,8 +6,8 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
-import com.example.singmetoo.appSingMe2.mUtils.AppUtil
-import com.example.singmetoo.appSingMe2.mUtils.NavigationHelper
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
+import com.example.singmetoo.appSingMe2.mUtils.helpers.NavigationHelper
 import com.google.android.material.navigation.NavigationView
 
 class DrawerManager(var mContext: Context?, var drawerLayout: DrawerLayout) : NavigationView.OnNavigationItemSelectedListener {

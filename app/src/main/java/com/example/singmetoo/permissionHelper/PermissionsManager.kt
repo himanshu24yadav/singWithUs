@@ -5,7 +5,7 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
-import com.example.singmetoo.appSingMe2.mUtils.AppConstants
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppConstants
 
 class PermissionsManager {
 
@@ -17,7 +17,7 @@ class PermissionsManager {
             return context?.let { ContextCompat.checkSelfPermission(it,permission) } == PackageManager.PERMISSION_GRANTED
         }
 
-        fun checkPermissions(context:Context?,permissionList:Array<String>?,requestCode: Int = AppConstants.PERMISSION_REQUEST_CODE,permissionCallback: PermissionsResultInterface?) : Boolean{
+        fun checkPermissions(context:Context?, permissionList:Array<String>?, requestCode: Int = AppConstants.PERMISSION_REQUEST_CODE, permissionCallback: PermissionsResultInterface?) : Boolean{
             Companion.permissionCallback = permissionCallback
             var requestPermissionFor: Array<String>? = arrayOf()
 

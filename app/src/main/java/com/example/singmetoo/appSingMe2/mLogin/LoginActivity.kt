@@ -8,9 +8,9 @@ import androidx.databinding.DataBindingUtil
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
-import com.example.singmetoo.appSingMe2.mUtils.AppConstants
-import com.example.singmetoo.appSingMe2.mUtils.AppUtil
-import com.example.singmetoo.appSingMe2.mUtils.fetchString
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppConstants
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
+import com.example.singmetoo.appSingMe2.mUtils.helpers.fetchString
 import com.example.singmetoo.databinding.LoginLayoutActivityBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount

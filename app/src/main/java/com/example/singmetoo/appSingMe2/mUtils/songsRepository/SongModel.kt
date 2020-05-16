@@ -1,8 +1,8 @@
-package com.example.singmetoo.appSingMe2.mBase.pojo
+package com.example.singmetoo.appSingMe2.mUtils.songsRepository
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.singmetoo.appSingMe2.mUtils.AppConstants
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppConstants
 
 @Entity(tableName = AppConstants.TABLE_SONGS_FROM_DEVICE)
 class SongModel (

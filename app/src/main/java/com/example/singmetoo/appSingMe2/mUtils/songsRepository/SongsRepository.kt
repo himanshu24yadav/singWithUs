@@ -1,15 +1,13 @@
-package com.example.singmetoo.appSingMe2.mBase.util
+package com.example.singmetoo.appSingMe2.mUtils.songsRepository
 
 import android.content.Context
 import android.database.Cursor
-import android.database.DatabaseUtils
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.lifecycle.MutableLiveData
 import com.example.singmetoo.CustomApplicationClass
-import com.example.singmetoo.appSingMe2.mBase.pojo.SongModel
-import com.example.singmetoo.appSingMe2.mUtils.AppUtil
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.dbHelper.AppDatabase
 import kotlinx.coroutines.*
 
@@ -59,7 +57,8 @@ object SongsRepository {
                 val duration = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) cursor.getColumnIndex(MediaStore.Audio.Media.DURATION) else -1
 
                 do {
-                    val songModel = SongModel()
+                    val songModel =
+                        SongModel()
                     songModel.songId = cursor.getLong(id)
                     songModel.songTitle =  cursor.getString(title)
                     songModel.songPath = cursor.getString(data)
@@ -71,7 +70,10 @@ object SongsRepository {
                     songModel.songDateModified = cursor.getString(dateModified).toLongOrNull()
                     songModel.songDuration = if(duration != -1) cursor.getString(duration).toLongOrNull() else null
 
-                    if(isValidSongDetails(songModel)){
+                    if(isValidSongDetails(
+                            songModel
+                        )
+                    ){
                         musicList?.add(songModel)
                     }
 
@@ -107,7 +109,7 @@ object SongsRepository {
         }
     }
 
-    private fun isValidSongDetails(songDetail:SongModel) : Boolean{
+    private fun isValidSongDetails(songDetail: SongModel) : Boolean{
         return AppUtil.checkIsNotNull(songDetail.songTitle) && AppUtil.checkIsNotNull(songDetail.songPath)
     }
 

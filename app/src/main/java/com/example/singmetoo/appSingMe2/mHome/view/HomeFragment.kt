@@ -13,7 +13,7 @@ import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mHome.adapter.HomeAdapter
 import com.example.singmetoo.appSingMe2.mHome.interfaces.HomeItemsInterface
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
-import com.example.singmetoo.appSingMe2.mUtils.*
+import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.databinding.LayoutHomeFragmentBinding
 
 class HomeFragment : BaseFragment(),HomeItemsInterface {
@@ -58,7 +58,13 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
             setHasFixedSize(true)
             layoutManager = mLayoutManager
             mContext?.let {
-                addItemDecoration(SpaceItemDecoration(it.fetchDimen(R.dimen.item_spacing_top),it.fetchDimen(R.dimen.item_spacing_left),itemSpanCount))
+                addItemDecoration(
+                    SpaceItemDecoration(
+                        it.fetchDimen(R.dimen.item_spacing_top),
+                        it.fetchDimen(R.dimen.item_spacing_left),
+                        itemSpanCount
+                    )
+                )
             }
         }
         setHomeAdapter()
@@ -72,7 +78,8 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
 
     private fun setHomeAdapter() {
         if(mHomeAdapter==null){
-            mLayoutBinding.homeRV.adapter = HomeAdapter(mContext,AppUtil.getHomeItems(mContext),this)
+            mLayoutBinding.homeRV.adapter = HomeAdapter(mContext,
+                AppUtil.getHomeItems(mContext),this)
         } else {
             mHomeAdapter!!.updateData(AppUtil.getHomeItems(mContext))
             mHomeAdapter!!.notifyDataSetChanged()
