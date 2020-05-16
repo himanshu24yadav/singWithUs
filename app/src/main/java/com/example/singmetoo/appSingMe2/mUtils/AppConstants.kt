@@ -16,5 +16,8 @@ class AppConstants {
         //permissions
         const val PERMISSION_WRITE_STORAGE: String = Manifest.permission.WRITE_EXTERNAL_STORAGE
         const val PERMISSION_CAMERA: String = Manifest.permission.CAMERA
+
+        //table_names
+        const val TABLE_SONGS_FROM_DEVICE = "songs_from_device"
     }
 }

@@ -6,12 +6,15 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.interfaces.CommonBaseInterface
 import com.example.singmetoo.appSingMe2.mBase.interfaces.NavigationDrawerInterface
 import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
+import com.example.singmetoo.appSingMe2.mBase.viewModel.SongsViewModel
 import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
 import com.example.singmetoo.appSingMe2.mUtils.AppConstants
 import com.example.singmetoo.appSingMe2.mUtils.AppUtil
@@ -36,6 +39,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     private fun init() {
         initObj()
         initNavBar()
+        initFetchSongsFromDevice()
         initOpenHomeFragment()
     }
 
@@ -60,6 +64,11 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
                 actionBarDrawerToggle?.syncState()
             }
         }
+    }
+
+    private fun initFetchSongsFromDevice() {
+        val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(SongsViewModel::class.java)
+        viewModelSongs?.fetchAllSongsFromDevice()
     }
 
     private fun initOpenHomeFragment() {

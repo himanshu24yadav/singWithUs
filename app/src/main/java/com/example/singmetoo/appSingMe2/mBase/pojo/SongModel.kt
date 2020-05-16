@@ -1,12 +1,30 @@
 package com.example.singmetoo.appSingMe2.mBase.pojo
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.example.singmetoo.appSingMe2.mUtils.AppConstants
+
+@Entity(tableName = AppConstants.TABLE_SONGS_FROM_DEVICE)
 class SongModel (
 
-    var path:String? = null,
+    @PrimaryKey
+    var songId: Long = 0,
 
-    var name:String? = null,
+    var songPath:String? = "",
 
-    var album:String? =null,
+    var songTitle:String? = "",
 
-    var artist:String? =null
+    var songAlbum:String? = "",
+
+    var songArtist:String? = "",
+
+    var songComposer:String? = "",
+
+    var songSize:Long? = null,
+
+    var songDateAdded:Long? = null,
+
+    var songDateModified:Long? = null,
+
+    var songDuration:Long? = null
 )

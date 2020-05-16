@@ -43,7 +43,7 @@ class PermissionsManager {
             for (index in permissions.indices){
                 val permissionModel =
                     PermissionModel(permission = permissions[index], permissionGranted = grantResults[index] >= 0)
-                if(isAllGranted) isAllGranted = grantResults[index] > 0
+                if(isAllGranted) isAllGranted = grantResults[index] >= 0
                 arrayList?.add(permissionModel)
             }
             permissionCallback?.onPermissionResult(isAllGranted,arrayList,requestCode)
