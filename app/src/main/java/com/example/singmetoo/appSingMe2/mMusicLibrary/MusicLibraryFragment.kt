@@ -7,16 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.helpers.NavigationHelper
+import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
+import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsViewModel
 import com.example.singmetoo.databinding.LayoutMusicLibraryFragmentBinding
 
 class MusicLibraryFragment : BaseFragment() {
 
     private var mContext:Context? =null
     private lateinit var mLayoutBinding: LayoutMusicLibraryFragmentBinding
+    private var mSongsListFromDevice: ArrayList<SongModel>? = null
+    private var mSongViewModel: SongsViewModel? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -35,8 +42,20 @@ class MusicLibraryFragment : BaseFragment() {
     }
 
     private fun init() {
+        initObject()
+        initObservers()
         initToolbar()
         initListeners()
+    }
+
+    private fun initObservers() {
+        mSongViewModel?.getSongsLiveData()?.observe(this, Observer {
+            AppUtil.showToast(mContext,"song = ${it[0].songTitle}")
+        })
+    }
+
+    private fun initObject() {
+        mSongViewModel = ViewModelProviders.of((mContext as MainActivity)).get(SongsViewModel::class.java)
     }
 
     private fun initListeners() {

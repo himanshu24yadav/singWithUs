@@ -18,6 +18,7 @@ import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
 import com.example.singmetoo.appSingMe2.mUtils.helpers.AppConstants
 import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.helpers.addFragment
+import com.example.singmetoo.appSingMe2.mUtils.helpers.setProfileName
 import com.example.singmetoo.databinding.ActivityMainBinding
 import com.example.singmetoo.databinding.NavHeaderMainBinding
 
@@ -65,8 +66,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     }
 
     private fun initFetchSongsFromDevice() {
-        val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(
-            SongsViewModel::class.java)
+        val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(SongsViewModel::class.java)
         viewModelSongs?.fetchAllSongsFromDevice()
     }
 
