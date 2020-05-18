@@ -29,18 +29,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/toolbar_title_text_appearance"
-                    android:visibility="visible"
-                    android:text="@string/home_toolbar_title"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
-                </TextView>
-
                 <RelativeLayout
                     android:id="@+id/toolbar_non_profile_img_rl"
                     android:layout_width="wrap_content"
@@ -83,6 +71,21 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/toolbar_title_text_appearance"
+            android:visibility="visible"
+            android:elevation="4dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text="@string/home_toolbar_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/home_frag_toolbar"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/home_frag_content_cl"

@@ -1,4 +1,4 @@
-package com.example.singmetoo.appSingMe2.mMusicLibrary
+package com.example.singmetoo.appSingMe2.mMusicLibrary.view
 
 import android.content.Context
 import android.os.Bundle
@@ -45,7 +45,13 @@ class MusicLibraryFragment : BaseFragment() {
         initObject()
         initObservers()
         initToolbar()
+        initViews()
         initListeners()
+    }
+
+    private fun initViews() {
+        mLayoutBinding.toolbarTitle.isSelected = true
+        mLayoutBinding.toolbarSubtitle.isSelected = true
     }
 
     private fun initObservers() {

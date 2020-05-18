@@ -7,6 +7,24 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_home_background">
 
+        <FrameLayout
+            android:id="@+id/default_playing_song_fl"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/playing_song_rv"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/default_playing_song_iv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0.2"
+                android:scaleType="centerCrop"
+                android:src="@drawable/bg_default_playing_song" />
+
+        </FrameLayout>
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/music_lib_frag_toolbar"
             android:layout_width="match_parent"
@@ -16,42 +34,83 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/toolbar_title_text_appearance"
-                    android:visibility="visible"
-                    android:text="@string/music_library_toolbar_title"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
-                </TextView>
-
-                <ImageView
-                    android:id="@+id/toolbar_home_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_menu_home"
-                    android:tint="@color/white"
-                    android:padding="10dp"
-                    android:layout_marginEnd="6dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent">
-                </ImageView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <ImageView
+                android:id="@+id/toolbar_home_icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="6dp"
+                android:padding="10dp"
+                android:src="@drawable/ic_menu_home"
+                android:tint="@color/white" />
 
         </androidx.appcompat.widget.Toolbar>
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            style="@style/toolbar_title_text_appearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:ellipsize="marquee"
+            android:maxEms="10"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:singleLine="true"
+            android:text="@string/music_library_toolbar_title"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/music_lib_frag_toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/toolbar_subtitle"
+            style="@style/toolbar_title_text_appearance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:ellipsize="marquee"
+            android:maxEms="15"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:singleLine="true"
+            android:textSize="@dimen/toolbar_subtitle_text_size"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/music_lib_frag_toolbar" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/song_control_barrier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="music_lib_frag_toolbar,toolbar_subtitle" />
+
+        <RelativeLayout
+            android:id="@+id/playing_song_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/song_control_barrier">
+
+            <include layout="@layout/layout_song_controls" />
+
+        </RelativeLayout>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/playing_song_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="toolbar_subtitle,playing_song_rv,default_playing_song_fl" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

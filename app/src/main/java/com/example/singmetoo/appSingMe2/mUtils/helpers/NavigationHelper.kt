@@ -4,7 +4,7 @@ import androidx.fragment.app.FragmentManager
 import com.example.singmetoo.CustomApplicationClass
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
-import com.example.singmetoo.appSingMe2.mMusicLibrary.MusicLibraryFragment
+import com.example.singmetoo.appSingMe2.mMusicLibrary.view.MusicLibraryFragment
 
 class NavigationHelper {
     companion object {
