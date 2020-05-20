@@ -10,4 +10,5 @@
     <color name="bg_gradient_end_color">#195671</color>
     <color name="navigation_view_color">#DCD9D5</color>
     <color name="song_item_color">#000</color>
+    <color name="song_item_card_bg_color">#ECE8E8</color>
 </resources>

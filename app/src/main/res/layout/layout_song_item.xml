@@ -14,7 +14,7 @@
         android:layout_height="@dimen/song_item_card_height"
         android:layout_marginStart="@dimen/song_item_card_margin"
         android:layout_marginEnd="@dimen/song_item_card_margin"
-        app:cardBackgroundColor="#ECE8E8"
+        app:cardBackgroundColor="@color/song_item_card_bg_color"
         app:cardCornerRadius="4dp"
         app:cardElevation="4dp">
 
