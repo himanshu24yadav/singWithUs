@@ -21,8 +21,11 @@ import com.example.singmetoo.appSingMe2.mUtils.helpers.addFragment
 import com.example.singmetoo.appSingMe2.mUtils.helpers.setProfileName
 import com.example.singmetoo.databinding.ActivityMainBinding
 import com.example.singmetoo.databinding.NavHeaderMainBinding
+import com.example.singmetoo.permissionHelper.PermissionModel
+import com.example.singmetoo.permissionHelper.PermissionsManager
+import com.example.singmetoo.permissionHelper.PermissionsResultInterface
 
-class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterface {
+class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterface,PermissionsResultInterface {
 
     private lateinit var mLayoutBinding: ActivityMainBinding
     private var actionBarDrawerToggle:ActionBarDrawerToggle? = null
@@ -66,8 +69,10 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     }
 
     private fun initFetchSongsFromDevice() {
-        val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(SongsViewModel::class.java)
-        viewModelSongs?.fetchAllSongsFromDevice()
+        if(PermissionsManager.checkPermissions(this, arrayOf(AppConstants.PERMISSION_WRITE_STORAGE),permissionCallback = this)) {
+            val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(SongsViewModel::class.java)
+            viewModelSongs?.fetchAllSongsFromDevice()
+        }
     }
 
     private fun initOpenHomeFragment() {
@@ -127,5 +132,12 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     override fun onProfileClick(view:View) {
         mLayoutBinding.drawerLayout.closeDrawer(GravityCompat.START)
         AppUtil.showToast(this,"onProfileClick")
+    }
+
+    override fun onPermissionResult(isAllGranted: Boolean, permissionResults: ArrayList<PermissionModel>?, requestCode: Int) {
+        if(isAllGranted){
+            val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(SongsViewModel::class.java)
+            viewModelSongs?.fetchAllSongsFromDevice()
+        }
     }
 }

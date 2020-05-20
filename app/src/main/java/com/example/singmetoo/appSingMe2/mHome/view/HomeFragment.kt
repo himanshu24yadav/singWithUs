@@ -15,6 +15,7 @@ import com.example.singmetoo.appSingMe2.mHome.interfaces.HomeItemsInterface
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
 import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.databinding.LayoutHomeFragmentBinding
+import kotlinx.android.synthetic.main.layout_home_fragment.*
 
 class HomeFragment : BaseFragment(),HomeItemsInterface {
 
@@ -59,11 +60,7 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
             layoutManager = mLayoutManager
             mContext?.let {
                 addItemDecoration(
-                    SpaceItemDecoration(
-                        it.fetchDimen(R.dimen.item_spacing_top),
-                        it.fetchDimen(R.dimen.item_spacing_left),
-                        itemSpanCount
-                    )
+                    SpaceItemDecoration(it.fetchDimen(R.dimen.item_spacing_top), it.fetchDimen(R.dimen.item_spacing_left), itemSpanCount)
                 )
             }
         }
@@ -78,8 +75,8 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
 
     private fun setHomeAdapter() {
         if(mHomeAdapter==null){
-            mLayoutBinding.homeRV.adapter = HomeAdapter(mContext,
-                AppUtil.getHomeItems(mContext),this)
+            mHomeAdapter = HomeAdapter(mContext, AppUtil.getHomeItems(mContext),this)
+            mLayoutBinding.homeRV.adapter = mHomeAdapter
         } else {
             mHomeAdapter!!.updateData(AppUtil.getHomeItems(mContext))
             mHomeAdapter!!.notifyDataSetChanged()

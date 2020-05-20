@@ -1,11 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="songItem"
+            type="com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel" />
+    </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:background="@color/white"
+        android:layout_height="64dp">
 
+        <ImageView
+            android:id="@+id/song_play_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_play_circle_48dp"
+            android:layout_marginStart="14dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/song_title_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{songItem.songTitle}"
+            android:layout_marginStart="16dp"
+            android:textColor="@color/black"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintStart_toEndOf="@+id/song_play_iv"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/song_artist_tv"
+            app:layout_constraintEnd_toStartOf="@+id/song_duration_tv"
+            />
+
+        <TextView
+            android:id="@+id/song_artist_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{songItem.songArtist}"
+            android:layout_marginStart="16dp"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:layout_marginEnd="16dp"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toEndOf="@+id/song_play_iv"
+            app:layout_constraintTop_toBottomOf="@+id/song_title_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/song_duration_tv"
+            />
+
+        <TextView
+            android:id="@+id/song_duration_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4:15"
+            android:layout_marginEnd="14dp"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

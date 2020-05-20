@@ -13,4 +13,5 @@
     <dimen name="toolbar_subtitle_text_size">12sp</dimen>
     <dimen name="item_spacing_top">56dp</dimen>
     <dimen name="item_spacing_left">12dp</dimen>
+    <dimen name="song_item_spacing_top">4dp</dimen>
 </resources>
