@@ -2,8 +2,10 @@ package com.example.singmetoo.appSingMe2.mUtils.helpers
 
 import android.content.Context
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 
 fun Context.fetchString(stringId:Int) : String {
@@ -12,6 +14,10 @@ fun Context.fetchString(stringId:Int) : String {
 
 fun Context.fetchDimen(dimenId:Int) : Int {
     return resources.getDimensionPixelSize(dimenId)
+}
+
+fun Context.fetchColor(colorId:Int) : Int {
+    return ContextCompat.getColor(this, colorId)
 }
 
 fun FragmentManager.addFragment(fragment:Fragment, container:Int, fragmentTag:String = AppConstants.DEFAULT_FRAGMENT_TAG, addToBackStack:Boolean = true) {

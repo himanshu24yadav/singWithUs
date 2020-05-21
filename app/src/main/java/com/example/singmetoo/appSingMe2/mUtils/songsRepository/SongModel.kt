@@ -26,5 +26,7 @@ class SongModel (
 
     var songDateModified:Long? = null,
 
-    var songDuration:Long? = null
+    var songDuration:Long? = null,
+
+    var songCurrentlyPlaying:Boolean = false
 )

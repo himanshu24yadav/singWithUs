@@ -10,7 +10,7 @@ import com.example.singmetoo.dbHelper.daos.DaoSongsFromDevice
 import com.example.singmetoo.dbHelper.daos.DaoTestingUser
 import com.example.singmetoo.testing.TestingUserModel
 
-@Database (entities = [TestingUserModel::class, SongModel::class],version = 2)
+@Database (entities = [TestingUserModel::class, SongModel::class],version = 3)
 @TypeConverters(DBTypeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
 

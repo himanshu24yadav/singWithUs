@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import com.example.singmetoo.R
 import de.hdodenhof.circleimageview.CircleImageView
 
 object BindingAdapterUtil {
@@ -22,11 +23,5 @@ object BindingAdapterUtil {
     @BindingAdapter("imageRes")
     fun setImageRes (imageView:ImageView?,resId:Int){
         imageView?.setImageResource(resId)
-    }
-
-    @JvmStatic
-    @BindingAdapter("imageBackground")
-    fun setImageBackground (frameLayout: FrameLayout?,colorId:Int){
-        frameLayout?.setBackgroundResource(colorId)
     }
 }
