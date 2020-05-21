@@ -55,6 +55,7 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
         itemBinding.songArtistTv.setTypeface(null,Typeface.ITALIC)
         itemBinding.songArtistTv.setTextColor(mContext?.fetchColor(R.color.song_item_artist_text_color)!!)
         itemBinding.songPlayIv.setImageResource(R.drawable.ic_play_circle_48dp)
+        itemBinding.mainViewCl.setBackgroundColor(mContext?.fetchColor(R.color.song_item_card_bg_color)!!)
     }
 
     private fun setPlayingSongView(itemBinding: LayoutSongItemBinding) {
@@ -62,6 +63,7 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
         itemBinding.songArtistTv.setTypeface(null,Typeface.BOLD_ITALIC)
         itemBinding.songArtistTv.setTextColor(mContext?.fetchColor(R.color.white)!!)
         itemBinding.songPlayIv.setImageResource(R.drawable.ic_pause_circle_48dp)
+        itemBinding.mainViewCl.setBackgroundColor(mContext?.fetchColor(R.color.bg_song_item_playing)!!)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
