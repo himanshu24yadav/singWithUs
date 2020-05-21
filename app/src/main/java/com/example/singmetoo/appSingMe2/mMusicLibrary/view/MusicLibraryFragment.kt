@@ -16,6 +16,7 @@ import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
 import com.example.singmetoo.appSingMe2.mMusicLibrary.interfaces.MusicLibraryAdapterCallback
 import com.example.singmetoo.appSingMe2.mMusicLibrary.adapter.MusicLibraryAdapter
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.helpers.NavigationHelper
 import com.example.singmetoo.appSingMe2.mUtils.helpers.SpaceItemDecoration
 import com.example.singmetoo.appSingMe2.mUtils.helpers.fetchDimen
@@ -30,8 +31,10 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
     private var mSongsListFromDevice: ArrayList<SongModel>? = null
     private var mSongViewModel: SongsViewModel? = null
     private var mSongsAdapter: MusicLibraryAdapter? = null
-    private var mSelectedSongModel: SongModel? = null
+    private var mPlayingSongModel: SongModel? = null
     private var mLinearLayoutManager: RecyclerView.LayoutManager? = null
+    private var mOldPlayingSongId : Long? = -1
+    private var mNewPlayingSongId : Long? = -1
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -79,9 +82,9 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
     private fun updateView() {
         mSongsListFromDevice?.let { list ->
             if(list.size > 0) {
-                list[0].songCurrentlyPlaying = true
-                mSelectedSongModel = list[0]
-                setTitleForSongPlaying(list[0])
+                mPlayingSongModel = AppUtil.getPlayingSongFromList(list)
+                mOldPlayingSongId = mPlayingSongModel?.songId
+                setTitleForSongPlaying()
                 mLayoutBinding.playingSongGroup.visibility = View.VISIBLE
                 mLayoutBinding.songsRv.visibility = View.VISIBLE
                 setMusicLibraryAdapter()
@@ -97,7 +100,7 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
             mSongsAdapter!!.updateData(mSongsListFromDevice)
             mSongsAdapter!!.notifyDataSetChanged()
         } else {
-            mSongsAdapter = MusicLibraryAdapter(mContext,mSongsListFromDevice,this)
+            mSongsAdapter = MusicLibraryAdapter(mContext,mSongsListFromDevice,this,selectedSongIndex = mSongsListFromDevice?.indexOf(mPlayingSongModel)!!)
             mLayoutBinding.songsRv.adapter = mSongsAdapter
         }
     }
@@ -120,22 +123,28 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         mLayoutBinding.musicLibFragToolbar.setNavigationOnClickListener(navigationDrawerListener())
     }
 
-    private fun setTitleForSongPlaying(songModel:SongModel?) {
+    private fun setTitleForSongPlaying() {
         mLayoutBinding.toolbarTitle.isSelected = true
         mLayoutBinding.toolbarSubtitle.isSelected = true
-        mLayoutBinding.toolbarTitle.text = songModel?.songTitle
-        mLayoutBinding.toolbarSubtitle.text = songModel?.songArtist
+        mLayoutBinding.toolbarTitle.text = mPlayingSongModel?.songTitle
+        mLayoutBinding.toolbarSubtitle.text = mPlayingSongModel?.songArtist
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mSongViewModel?.updateCurrentlyPlayingSongFromDevice(mOldPlayingSongId,mNewPlayingSongId)
     }
 
     override fun selectedSongForPlaying(newSelectedSongForPlaying: SongModel?) {
-        setTitleForSongPlaying(newSelectedSongForPlaying)
-
-        val oldSelectedSong:Int = mSongsListFromDevice?.indexOf(mSelectedSongModel)!!
-        val newSelectedSong:Int= mSongsListFromDevice?.indexOf(newSelectedSongForPlaying)!!
-        if(oldSelectedSong!=-1 && newSelectedSong!=-1) {
-            mSongsListFromDevice?.get(oldSelectedSong)?.songCurrentlyPlaying = false
-            mSongsListFromDevice?.get(newSelectedSong)?.songCurrentlyPlaying = true
+        val oldSelectedSongIndex:Int = mSongsListFromDevice?.indexOf(mPlayingSongModel)!!
+        val newSelectedSongIndex:Int= mSongsListFromDevice?.indexOf(newSelectedSongForPlaying)!!
+        if(oldSelectedSongIndex!=-1 && newSelectedSongIndex!=-1) {
+            mSongsListFromDevice?.get(oldSelectedSongIndex)?.songCurrentlyPlaying = false
+            mSongsListFromDevice?.get(newSelectedSongIndex)?.songCurrentlyPlaying = true
         }
-        mSelectedSongModel = newSelectedSongForPlaying
+        mNewPlayingSongId = newSelectedSongForPlaying?.songId
+        mPlayingSongModel = newSelectedSongForPlaying
+
+        setTitleForSongPlaying()
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.widget.Toast
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
+import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 
 class AppUtil {
 
@@ -54,6 +55,19 @@ class AppUtil {
             homeItems?.add(radioModel)
 
             return homeItems
+        }
+
+        fun getPlayingSongFromList(songListFromDevice:ArrayList<SongModel>?) : SongModel?{
+            var playingSongModel:SongModel? = null
+            songListFromDevice?.let {
+                for (item in it) {
+                    if(item.songCurrentlyPlaying) {
+                        playingSongModel = item
+                        break
+                    }
+                }
+            }
+            return playingSongModel
         }
     }
 

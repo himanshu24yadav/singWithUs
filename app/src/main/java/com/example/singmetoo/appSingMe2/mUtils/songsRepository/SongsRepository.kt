@@ -33,7 +33,30 @@ object SongsRepository {
                 }
             }
         }
+    }
 
+    fun updateCurrentlyPlayingSongFromDevice(oldPlayingSongId:Long?, newPlayingSongId:Long?) {
+        val updateSongList: ArrayList<SongModel>? = mSongLiveData?.value
+        var oldPlayingSongModel:SongModel? = null
+        var newPlayingSongModel:SongModel? = null
+
+        updateSongList?.let {
+            for (item in it) {
+                item.songCurrentlyPlaying = item.songId == newPlayingSongId
+                when(item.songId) {
+                    oldPlayingSongId -> oldPlayingSongModel = item
+                    newPlayingSongId -> newPlayingSongModel = item
+                }
+            }
+        }
+        mSongLiveData?.value = updateSongList
+
+        CoroutineScope(Dispatchers.Main + Job() + coroutineExceptionHandler).launch {
+            if(oldPlayingSongModel!=null && newPlayingSongModel!=null) {
+                updateSongDetailsFromDevice(oldPlayingSongModel)
+                updateSongDetailsFromDevice(newPlayingSongModel)
+            }
+        }
     }
 
     private suspend fun fromDevice() {
@@ -57,8 +80,7 @@ object SongsRepository {
                 val duration = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) cursor.getColumnIndex(MediaStore.Audio.Media.DURATION) else -1
 
                 do {
-                    val songModel =
-                        SongModel()
+                    val songModel = SongModel()
                     songModel.songId = cursor.getLong(id)
                     songModel.songTitle =  cursor.getString(title)
                     songModel.songPath = cursor.getString(data)
@@ -70,16 +92,16 @@ object SongsRepository {
                     songModel.songDateModified = cursor.getString(dateModified).toLongOrNull()
                     songModel.songDuration = if(duration != -1) cursor.getString(duration).toLongOrNull() else null
 
-                    if(isValidSongDetails(
-                            songModel
-                        )
-                    ){
+                    if(isValidSongDetails(songModel)){
                         musicList?.add(songModel)
                     }
 
                 } while (cursor.moveToNext())
             }
 
+            if(musicList!!.size > 0) {
+                musicList[0].songCurrentlyPlaying = true
+            }
             mSongLiveData?.postValue(musicList)
 
             cursor?.close()
@@ -106,6 +128,14 @@ object SongsRepository {
         withContext(Dispatchers.Default) {
             val songsList: ArrayList<SongModel>? = appDatabase?.daoSongsFromDevice()?.getAllSongsFromDevice() as? ArrayList<SongModel>?
             mSongLiveData?.postValue(songsList)
+        }
+    }
+
+    private suspend fun updateSongDetailsFromDevice(songModelToUpdate:SongModel?) {
+        withContext(Dispatchers.Default) {
+            songModelToUpdate?.let {
+                appDatabase?.daoSongsFromDevice()?.updateSongDetail(songModelToUpdate)
+            }
         }
     }
 
