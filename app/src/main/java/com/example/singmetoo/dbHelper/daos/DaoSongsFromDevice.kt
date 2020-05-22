@@ -7,7 +7,7 @@ import com.example.singmetoo.appSingMe2.mUtils.helpers.AppConstants
 @Dao
 interface DaoSongsFromDevice {
 
-    @Query ("Select * from ${AppConstants.TABLE_SONGS_FROM_DEVICE}")
+    @Query ("Select * from ${AppConstants.TABLE_SONGS_FROM_DEVICE} ORDER BY songTitle ASC")
     fun getAllSongsFromDevice() : List<SongModel>?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

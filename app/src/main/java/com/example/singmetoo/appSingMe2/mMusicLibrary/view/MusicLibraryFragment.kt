@@ -84,6 +84,7 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
             if(list.size > 0) {
                 mPlayingSongModel = AppUtil.getPlayingSongFromList(list)
                 mOldPlayingSongId = mPlayingSongModel?.songId
+                mNewPlayingSongId = mOldPlayingSongId
                 setTitleForSongPlaying()
                 mLayoutBinding.playingSongGroup.visibility = View.VISIBLE
                 mLayoutBinding.songsRv.visibility = View.VISIBLE
