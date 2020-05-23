@@ -69,6 +69,7 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
             }
             itemAnimator = null
         }
+        commonBaseInterface?.hideBottomAudioPlayer()
     }
 
     private fun initObservers() {

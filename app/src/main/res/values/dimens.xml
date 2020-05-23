@@ -8,6 +8,14 @@
     <dimen name="toolbar_height">58dp</dimen>
     <dimen name="base_margin_horizontal">16dp</dimen>
 
+    //audio player
+    <dimen name="audio_player_preview_height">64dp</dimen>
+    <dimen name="player_height">96dp</dimen>
+    <dimen name="player_overlay_peek_height">61dp</dimen>
+    <dimen name="player_overlay_placeholder_height">56dp</dimen>
+    <dimen name="player_padding">16dp</dimen>
+    <dimen name="player_icon_padding">6dp</dimen>
+
 
     <dimen name="nav_text_size">13sp</dimen>
     <dimen name="toolbar_title_text_size">16sp</dimen>

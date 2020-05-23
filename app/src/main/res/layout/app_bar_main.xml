@@ -9,6 +9,9 @@
 
         <include layout="@layout/main_content_layout" />
 
+        <include android:id="@+id/include_audio_player_layout"
+            layout="@layout/bottom_audio_player" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

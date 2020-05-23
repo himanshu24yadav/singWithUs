@@ -1,42 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/player_controls_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:padding="10dp">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/play_iv"
+            style="@style/ExoMediaButton.Rewind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_play_white"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/exo_icon_play"
+            android:padding="@dimen/player_icon_padding"
+            android:tint="@color/white"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             />
 
         <ImageView
             android:id="@+id/skip_next_song_iv"
+            style="@style/ExoMediaButton.Play"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_skip_next_white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/play_iv"
-            />
+            android:layout_height="0dp"
+            android:padding="@dimen/player_icon_padding"
+            android:src="@drawable/exo_icon_previous"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/play_iv"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/skip_previous_song_iv"
+            style="@style/ExoMediaButton.Pause"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_skip_previous_white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/play_iv"
-            />
+            android:layout_height="0dp"
+            android:padding="@dimen/player_icon_padding"
+            android:src="@drawable/exo_icon_next"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/play_iv"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

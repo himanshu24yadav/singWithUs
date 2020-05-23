@@ -20,4 +20,10 @@
     <string name="home_item_music_title">Music</string>
     <string name="home_item_playlists_title">Playlists</string>
     <string name="home_item_radio_title">Radio</string>
+
+    //music service
+    <string name="playback_channel_name">Now Playing</string>
+    <string name="loading_dots">…</string>
+    <string name="playback_uri_was_not_set">Playback uri was not set</string>
+    <string name="player_default_title">Unknown</string>
 </resources>

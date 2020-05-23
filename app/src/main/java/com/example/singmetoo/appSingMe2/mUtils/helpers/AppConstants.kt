@@ -19,5 +19,12 @@ class AppConstants {
 
         //table_names
         const val TABLE_SONGS_FROM_DEVICE = "songs_from_device"
+
+        const val ARG_SONG_TITLE = "ARG_SONG_TITLE"
+        const val ARG_SONG_ID = "ARG_SONG_ID"
+        const val ARG_SONG_PATH = "ARG_SONG_ID"
+        const val ARG_SONG_START_POS = "ARG_SONG_START_POS"
+        const val DEFAULT_TITLE = "Unknown"
+        const val DEFAULT_ARTIST = "<unknown>"
     }
 }

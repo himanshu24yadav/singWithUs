@@ -13,4 +13,10 @@
     <color name="song_item_card_bg_color">@android:color/transparent</color>
     <color name="song_item_artist_text_color">#BFBBBB</color>
     <color name="bg_song_item_playing">#7E6130</color>
+
+    <!-- Player -->
+    <color name="color_played">#FF5F46F4</color>
+    <color name="color_buffered">#1F5F46F4</color>
+    <color name="color_unplayed">#FFBEBEBE</color>
+    <color name="bg_player">#434343</color>
 </resources>
