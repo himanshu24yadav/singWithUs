@@ -219,10 +219,6 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             mPlayerStatusLiveData?.observe(this@MainActivity, Observer {
                 handlePlayerStatusChangeFromService(it)
             })
-
-            // Show player after config change.
-            val songModel = AppUtil.getPlayingSongFromList(mSongsListFromDevice,songId = mAudioPlayService?.mSongId?.toLong())
-            updateAudioPlayerDetails(songModel,false)
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {

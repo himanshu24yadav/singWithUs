@@ -6,4 +6,6 @@ interface MusicLibraryAdapterCallback {
 
     fun selectedSongForPlaying(newSelectedSongForPlaying:SongModel?)
 
+    fun togglePlayingSong(newSelectedSongForPlaying: SongModel?, toPauseSong:Boolean)
+
 }

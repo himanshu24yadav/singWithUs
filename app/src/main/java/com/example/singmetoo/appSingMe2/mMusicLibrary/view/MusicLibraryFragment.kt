@@ -150,4 +150,8 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         setTitleForSongPlaying()
         commonBaseInterface?.playAudio(newSelectedSongForPlaying,false)
     }
+
+    override fun togglePlayingSong(newSelectedSongForPlaying: SongModel?, toPauseSong: Boolean) {
+
+    }
 }
