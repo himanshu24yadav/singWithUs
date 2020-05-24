@@ -2,6 +2,8 @@ package com.example.singmetoo.appSingMe2.mUtils.helpers
 
 import android.app.ActivityManager
 import android.content.Context
+import android.net.Uri
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -59,4 +61,12 @@ fun Context.isServiceRunning(serviceClassName: String): Boolean {
 
 fun Player.isPlayingSong() : Boolean{
     return playbackState == Player.STATE_READY && playWhenReady
+}
+
+fun ImageView.setAlbumImage(uri: Uri?) {
+    if(uri == null) {
+        setImageResource(R.drawable.bg_default_playing_song)
+    } else {
+        setImageURI(uri)
+    }
 }

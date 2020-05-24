@@ -10,6 +10,8 @@ class SongModel (
     @PrimaryKey
     var songId: Long = 0,
 
+    var songAlbumId: Long = 0,
+
     var songPath:String? = "",
 
     var songTitle:String? = "",

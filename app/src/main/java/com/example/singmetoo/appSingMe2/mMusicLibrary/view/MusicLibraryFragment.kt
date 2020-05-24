@@ -1,6 +1,8 @@
 package com.example.singmetoo.appSingMe2.mMusicLibrary.view
 
+import android.content.ContentUris
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,15 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
-import com.example.singmetoo.appSingMe2.mMusicLibrary.interfaces.MusicLibraryAdapterCallback
 import com.example.singmetoo.appSingMe2.mMusicLibrary.adapter.MusicLibraryAdapter
-import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
-import com.example.singmetoo.appSingMe2.mUtils.helpers.NavigationHelper
-import com.example.singmetoo.appSingMe2.mUtils.helpers.SpaceItemDecoration
-import com.example.singmetoo.appSingMe2.mUtils.helpers.fetchDimen
+import com.example.singmetoo.appSingMe2.mMusicLibrary.interfaces.MusicLibraryAdapterCallback
+import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsViewModel
 import com.example.singmetoo.databinding.LayoutMusicLibraryFragmentBinding
+
 
 class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
 
@@ -130,6 +130,7 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         mLayoutBinding.toolbarSubtitle.isSelected = true
         mLayoutBinding.toolbarTitle.text = mPlayingSongModel?.songTitle
         mLayoutBinding.toolbarSubtitle.text = mPlayingSongModel?.songArtist
+        mLayoutBinding.defaultPlayingSongIv.setAlbumImage(AppUtil.getImageUriFromAlbum(mPlayingSongModel?.songAlbumId))
     }
 
     override fun onStop() {

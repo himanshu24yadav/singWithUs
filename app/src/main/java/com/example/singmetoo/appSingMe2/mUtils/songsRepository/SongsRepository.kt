@@ -69,6 +69,7 @@ object SongsRepository {
 
             if (cursor!= null && cursor.moveToFirst()){
                 val id = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
+                val albumId = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)
                 val title = cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)
                 val data = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
                 val album = cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM)
@@ -83,6 +84,7 @@ object SongsRepository {
                     val songModel = SongModel()
                     songModel.songId = cursor.getLong(id)
                     songModel.songTitle =  cursor.getString(title)
+                    songModel.songAlbumId =  cursor.getLong(albumId)
                     songModel.songPath = cursor.getString(data)
                     songModel.songAlbum = cursor.getString(album)
                     songModel.songArtist = cursor.getString(artist)
@@ -140,7 +142,7 @@ object SongsRepository {
     }
 
     private fun isValidSongDetails(songDetail: SongModel) : Boolean{
-        return AppUtil.checkIsNotNull(songDetail.songTitle) && AppUtil.checkIsNotNull(songDetail.songPath)
+        return songDetail.songId > 0 && AppUtil.checkIsNotNull(songDetail.songTitle) && AppUtil.checkIsNotNull(songDetail.songPath)
     }
 
 }

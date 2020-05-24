@@ -1,6 +1,8 @@
 package com.example.singmetoo.appSingMe2.mUtils.helpers
 
+import android.content.ContentUris
 import android.content.Context
+import android.net.Uri
 import android.widget.Toast
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
@@ -81,6 +83,15 @@ class AppUtil {
             }
 
             return playingSongModel
+        }
+
+        fun getImageUriFromAlbum(albumId:Long?) : Uri? {
+            var uri: Uri? = null
+            albumId?.let {
+                val sArtworkUri: Uri = Uri.parse("content://media/external/audio/albumart")
+                uri =  ContentUris.withAppendedId(sArtworkUri, it)
+            }
+            return uri
         }
     }
 

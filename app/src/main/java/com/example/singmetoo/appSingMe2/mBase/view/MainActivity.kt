@@ -121,6 +121,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
         mBottomSheetAudioPlayerBehaviour?.isHideable = false
         addBottomSheetCallbacks()
+        hideBottomAudioPlayer()
     }
 
     private fun addBottomSheetCallbacks() {
@@ -149,6 +150,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun initObj() {
         drawerManager = DrawerManager(this, mLayoutBinding.drawerLayout)
+        mSongViewModel = ViewModelProviders.of(this).get(SongsViewModel::class.java)
     }
 
     private fun initNavBar() {
@@ -167,7 +169,6 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun initFetchSongsFromDevice() {
         if(PermissionsManager.checkPermissions(this, arrayOf(AppConstants.PERMISSION_WRITE_STORAGE),permissionCallback = this)) {
-            mSongViewModel = ViewModelProviders.of(this).get(SongsViewModel::class.java)
             mSongViewModel?.fetchAllSongsFromDevice()
         }
     }
@@ -202,6 +203,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
                 mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setImageResource(R.drawable.exo_icon_pause)
                 mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag = AppConstants.SONG_TAG_PAUSE
             }
+            mBottomAudioPlayerBinding.audioPlayerPreviewIv.setAlbumImage(AppUtil.getImageUriFromAlbum(it.songAlbumId))
         }
     }
 
@@ -366,8 +368,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun onPermissionResult(isAllGranted: Boolean, permissionResults: ArrayList<PermissionModel>?, requestCode: Int) {
         if(isAllGranted){
-            val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(SongsViewModel::class.java)
-            viewModelSongs?.fetchAllSongsFromDevice()
+            mSongViewModel?.fetchAllSongsFromDevice()
         }
     }
 }
