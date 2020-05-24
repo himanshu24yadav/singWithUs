@@ -63,7 +63,7 @@ class AudioPlayService : Service() {
     private var mediaSessionConnector: MediaSessionConnector? = null
     var mSongId: String? = null
     var mSongTitle: String? = null
-    private val mPlayerStatusLiveData = MutableLiveData<PlayerStatus>()
+    private var mPlayerStatusLiveData = MutableLiveData<PlayerStatus>()
     val playerStatusLiveData: LiveData<PlayerStatus>
         get() = mPlayerStatusLiveData
 

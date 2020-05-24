@@ -6,12 +6,13 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.singmetoo.R
@@ -34,6 +35,8 @@ import com.example.singmetoo.permissionHelper.PermissionsManager
 import com.example.singmetoo.permissionHelper.PermissionsResultInterface
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
+const val TAG = "MAIN_ACTIVITY_TAG"
+
 class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterface,PermissionsResultInterface {
 
     private lateinit var mLayoutBinding: ActivityMainBinding
@@ -41,7 +44,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     private var actionBarDrawerToggle:ActionBarDrawerToggle? = null
     private var drawerManager: DrawerManager? = null
     private var mBottomSheetAudioPlayerBehaviour: BottomSheetBehavior<View>? = null
-    private val mPlayerStatusLiveData: MutableLiveData<PlayerStatus> = MutableLiveData()
+    private var mPlayerStatusLiveData: LiveData<PlayerStatus>? = null
     private var mSongViewModel : SongsViewModel? = null
     private var mCurrentPlayingSong: SongModel? = null
     private var mAudioPlayService: AudioPlayService? = null
@@ -62,9 +65,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun onStart() {
         super.onStart()
-        if (applicationContext.isServiceRunning(AudioPlayService::class.java.name)) {
-            bindToAudioService()
-        }
+        bindToAudioService()
     }
 
     override fun onStop() {
@@ -84,10 +85,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun initListeners() {
         mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setOnClickListener {
-            AudioPlayService.newIntent(this, mCurrentPlayingSong).also { intent ->
-                // This service will get converted to foreground service using the PlayerNotificationManager notification Id.
-                startService(intent)
-            }
+            startAudioService()
         }
     }
 
@@ -97,7 +95,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             mSongsListFromDevice?.addAll(list)
             mCurrentPlayingSong = AppUtil.getPlayingSongFromList(list)
             mCurrentPlayingSong?.let {
-                showBottomAudioPlayer(it)
+                showBottomAudioPlayer(it,true)
             }
         })
     }
@@ -176,6 +174,107 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         headerLayoutBinding?.userInfo = mUserInfo
     }
 
+    private fun updateAudioPlayerDetails(songToPlay: SongModel?, songPaused: Boolean) {
+        songToPlay?.let {
+            mBottomAudioPlayerBinding.audioPlayerPreviewTitleTv.text = it.songTitle ?: AppConstants.DEFAULT_TITLE
+            mBottomAudioPlayerBinding.audioPlayerPreviewArtistTv.text = it.songArtist ?: AppConstants.DEFAULT_ARTIST
+            mBottomAudioPlayerBinding.audioPlayerPreviewTitleTv.isSelected = true
+            mBottomAudioPlayerBinding.audioPlayerPreviewArtistTv.isSelected = true
+            if(songPaused) {
+                mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setImageResource(R.drawable.exo_icon_play)
+                mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag = AppConstants.SONG_TAG_PLAY
+            } else {
+                mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setImageResource(R.drawable.exo_icon_pause)
+                mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag = AppConstants.SONG_TAG_PAUSE
+            }
+        }
+    }
+
+    //audio service connection
+    private val audioServiceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            Log.e(TAG,"onServiceConnected")
+            val binder = service as AudioPlayService.PlayMusicServiceBinder
+            mAudioPlayService = binder.playMusicService
+
+            // Attach the ExoPlayer to the PlayerView.
+            mBottomAudioPlayerBinding.exoPlayerView.player = binder.exoPlayer
+            mPlayerStatusLiveData = mAudioPlayService?.playerStatusLiveData
+
+            mPlayerStatusLiveData?.observe(this@MainActivity, Observer {
+                handlePlayerStatusChangeFromService(it)
+            })
+
+            // Show player after config change.
+            val songModel = AppUtil.getPlayingSongFromList(mSongsListFromDevice,songId = mAudioPlayService?.mSongId?.toLong())
+            updateAudioPlayerDetails(songModel,false)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            mAudioPlayService = null
+        }
+    }
+
+    private fun handlePlayerStatusChangeFromService(playerStatus: PlayerStatus) {
+        val songModel = AppUtil.getPlayingSongFromList(mSongsListFromDevice,songId = playerStatus.songId?.toLong())
+        when(playerStatus) {
+            is PlayerStatus.Playing -> {
+                songModel?.let { updateAudioPlayerDetails(songModel,false) }
+            }
+            is PlayerStatus.Ended -> {
+                songModel?.let { updateAudioPlayerDetails(it,true) }
+            }
+            is PlayerStatus.Cancelled -> {
+                songModel?.let { updateAudioPlayerDetails(it,true) }
+            }
+            is PlayerStatus.Paused -> {
+                songModel?.let { updateAudioPlayerDetails(it,true) }
+            }
+            is PlayerStatus.Error -> {
+                songModel?.let { updateAudioPlayerDetails(it,true) }
+            }
+        }
+    }
+
+    private fun bindToAudioService() {
+        if (mAudioPlayService == null) {
+            AudioPlayService.newIntent(this).also { intent ->
+                bindService(intent, audioServiceConnection, Context.BIND_AUTO_CREATE)
+            }
+        }
+    }
+
+    private fun unbindAudioService() {
+        if (mAudioPlayService != null) {
+            unbindService(audioServiceConnection)
+            mAudioPlayService = null
+        }
+    }
+
+    private fun startAudioService() {
+        if(mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag == AppConstants.SONG_TAG_PLAY) {
+            AudioPlayService.newIntent(this, mCurrentPlayingSong).also { intent ->
+                startService(intent)
+            }
+        } else {
+            mAudioPlayService?.pause()
+        }
+    }
+
+    private fun stopAudioService() {
+        mAudioPlayService?.pause()
+        unbindAudioService()
+        stopService(Intent(this, AudioPlayService::class.java))
+        mAudioPlayService = null
+    }
+
+
+
+
+    //--------------------------------------------------------------------------------------------//
+
+
+    //overridden methods
     override fun onBackPressed() {
         //if left nav_drawer is open
         if(mLayoutBinding.drawerLayout.isDrawerOpen(GravityCompat.START)){
@@ -193,31 +292,29 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         }
     }
 
-    override val playerStatusLiveData: MutableLiveData<PlayerStatus>?
+    override val playerStatusLiveData: LiveData<PlayerStatus>?
         get() = mPlayerStatusLiveData
 
-    override fun playAudio(songModel: SongModel?) {
+    override fun playAudio(songModel: SongModel?,toShowBottomAudioPlayer: Boolean) {
         songModel?.let {
             mCurrentPlayingSong = songModel
-            showBottomAudioPlayer(songModel)
-            bindToAudioService()
+            startAudioService()
+            updateAudioPlayerDetails(songModel,false)
         }
     }
 
     override fun pauseAudio() {
-
+        mCurrentPlayingSong?.let {
+            updateAudioPlayerDetails(mCurrentPlayingSong,true)
+        }
     }
 
     override fun stopAudio() {
-
     }
 
-    override fun showBottomAudioPlayer(songToPlay:SongModel?) {
+    override fun showBottomAudioPlayer(songToPlay:SongModel?,songPaused: Boolean) {
         songToPlay?.let {
-            mBottomAudioPlayerBinding.audioPlayerPreviewTitleTv.text = it.songTitle ?: AppConstants.DEFAULT_TITLE
-            mBottomAudioPlayerBinding.audioPlayerPreviewArtistTv.text = it.songArtist ?: AppConstants.DEFAULT_ARTIST
-            mBottomAudioPlayerBinding.audioPlayerPreviewTitleTv.isSelected = true
-            mBottomAudioPlayerBinding.audioPlayerPreviewArtistTv.isSelected = true
+            updateAudioPlayerDetails(it,songPaused)
             mBottomAudioPlayerBinding.audioPlayerMainCl.visibility = View.VISIBLE
             mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
             mBottomAudioPlayerBinding.exoPlayerView.showController()
@@ -260,71 +357,5 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(SongsViewModel::class.java)
             viewModelSongs?.fetchAllSongsFromDevice()
         }
-    }
-
-    //audio service connection
-    private val connection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            val binder = service as AudioPlayService.PlayMusicServiceBinder
-            mAudioPlayService = binder.playMusicService
-
-            // Attach the ExoPlayer to the PlayerView.
-            mBottomAudioPlayerBinding.exoPlayerView.player = binder.exoPlayer
-
-            // Pass player updates to interested observers.
-            mAudioPlayService?.playerStatusLiveData?.observe(this@MainActivity, Observer {
-                mPlayerStatusLiveData.value = it
-
-                when(it) {
-                    is PlayerStatus.Playing -> {
-                        AppUtil.showToast(this@MainActivity,"Player Playing")
-                    }
-                    is PlayerStatus.Ended -> {
-                        AppUtil.showToast(this@MainActivity,"Player Ended")
-                        stopAudioService()
-                    }
-                    is PlayerStatus.Cancelled -> {
-                        AppUtil.showToast(this@MainActivity,"Player Cancelled")
-                        stopAudioService()
-                    }
-                    is PlayerStatus.Paused -> {
-                        AppUtil.showToast(this@MainActivity,"Player Paused")
-                    }
-                    is PlayerStatus.Error -> {
-                        AppUtil.showToast(this@MainActivity,"Player Error")
-                    }
-                }
-            })
-
-            // Show player after config change.
-            val songModel = AppUtil.getPlayingSongFromList(mSongsListFromDevice,songId = mAudioPlayService?.mSongId?.toLong())
-            showBottomAudioPlayer(songModel)
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            mAudioPlayService = null
-        }
-    }
-
-    private fun bindToAudioService() {
-        if (mAudioPlayService == null) {
-            AudioPlayService.newIntent(this).also { intent ->
-                bindService(intent, connection, Context.BIND_AUTO_CREATE)
-            }
-        }
-    }
-
-    private fun unbindAudioService() {
-        if (mAudioPlayService != null) {
-            unbindService(connection)
-            mAudioPlayService = null
-        }
-    }
-
-    private fun stopAudioService() {
-        mAudioPlayService?.pause()
-        unbindAudioService()
-        stopService(Intent(this, AudioPlayService::class.java))
-        mAudioPlayService = null
     }
 }
