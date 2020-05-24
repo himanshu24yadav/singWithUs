@@ -148,5 +148,6 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         mPlayingSongModel = newSelectedSongForPlaying
 
         setTitleForSongPlaying()
+        commonBaseInterface?.playAudio(newSelectedSongForPlaying,false)
     }
 }

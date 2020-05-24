@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
 
 fun Context.fetchString(stringId:Int) : String {
     return resources.getString(stringId)
@@ -53,4 +55,8 @@ fun Context.isServiceRunning(serviceClassName: String): Boolean {
     val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
 
     return activityManager?.getRunningServices(Integer.MAX_VALUE)?.any { it.service.className == serviceClassName } ?: false
+}
+
+fun Player.isPlayingSong() : Boolean{
+    return playbackState == Player.STATE_READY && playWhenReady
 }

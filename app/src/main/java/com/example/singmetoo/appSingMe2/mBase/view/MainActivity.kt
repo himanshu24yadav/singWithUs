@@ -52,6 +52,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.e(TAG,"onCreate")
         mLayoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         mBottomAudioPlayerBinding = mLayoutBinding.appBarMain.includeAudioPlayerLayout
 
@@ -60,16 +61,29 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
+        Log.e(TAG,"onPostCreate")
         actionBarDrawerToggle?.syncState()
     }
 
     override fun onStart() {
+        Log.e(TAG,"onStart")
         super.onStart()
         bindToAudioService()
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.e(TAG,"onResume")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.e(TAG,"onPause")
+    }
+
     override fun onStop() {
         super.onStop()
+        Log.e(TAG,"onStop")
         unbindAudioService()
     }
 
@@ -91,11 +105,12 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun initObserver() {
         mSongViewModel?.getSongsLiveData()?.observe(this@MainActivity, Observer { list ->
+            Log.e(TAG,"Observer")
             mSongsListFromDevice?.clear()
             mSongsListFromDevice?.addAll(list)
             mCurrentPlayingSong = AppUtil.getPlayingSongFromList(list)
             mCurrentPlayingSong?.let {
-                showBottomAudioPlayer(it,true)
+                showBottomAudioPlayer(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isPlayingSong())
             }
         })
     }
@@ -298,13 +313,14 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     override fun playAudio(songModel: SongModel?,toShowBottomAudioPlayer: Boolean) {
         songModel?.let {
             mCurrentPlayingSong = songModel
+            updateAudioPlayerDetails(songModel,true)
             startAudioService()
-            updateAudioPlayerDetails(songModel,false)
         }
     }
 
     override fun pauseAudio() {
         mCurrentPlayingSong?.let {
+            mAudioPlayService?.pause()
             updateAudioPlayerDetails(mCurrentPlayingSong,true)
         }
     }
