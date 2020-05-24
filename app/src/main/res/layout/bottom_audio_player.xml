@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/audio_player_preview_height"
             android:padding="8dp"
-            android:background="#454C75"
+            android:background="@color/bg_audio_player_preview"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/exo_player_view">

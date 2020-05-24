@@ -1,5 +1,6 @@
 package com.example.singmetoo.appSingMe2.mUtils.helpers
 
+import android.app.ActivityManager
 import android.content.Context
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -45,4 +46,11 @@ fun FragmentManager.clearBackStack(){
 
 fun TextView.setProfileName(username:String?) {
     text = "Hi ${AppUtil.getFirstName(username)}"
+}
+
+@Suppress("DEPRECATION")
+fun Context.isServiceRunning(serviceClassName: String): Boolean {
+    val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as? ActivityManager
+
+    return activityManager?.getRunningServices(Integer.MAX_VALUE)?.any { it.service.className == serviceClassName } ?: false
 }

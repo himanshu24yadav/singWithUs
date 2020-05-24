@@ -1,7 +1,11 @@
 package com.example.singmetoo.appSingMe2.mBase.view
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
-import android.util.Log
+import android.os.IBinder
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
@@ -20,6 +24,7 @@ import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsViewModel
 import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
 import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
+import com.example.singmetoo.audioPlayerHelper.AudioPlayService
 import com.example.singmetoo.audioPlayerHelper.PlayerStatus
 import com.example.singmetoo.databinding.ActivityMainBinding
 import com.example.singmetoo.databinding.BottomAudioPlayerBinding
@@ -28,7 +33,6 @@ import com.example.singmetoo.permissionHelper.PermissionModel
 import com.example.singmetoo.permissionHelper.PermissionsManager
 import com.example.singmetoo.permissionHelper.PermissionsResultInterface
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.bottom_audio_player.view.*
 
 class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterface,PermissionsResultInterface {
 
@@ -40,6 +44,8 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     private val mPlayerStatusLiveData: MutableLiveData<PlayerStatus> = MutableLiveData()
     private var mSongViewModel : SongsViewModel? = null
     private var mCurrentPlayingSong: SongModel? = null
+    private var mAudioPlayService: AudioPlayService? = null
+    private var mSongsListFromDevice: ArrayList<SongModel>? = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,17 +60,41 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         actionBarDrawerToggle?.syncState()
     }
 
+    override fun onStart() {
+        super.onStart()
+        if (applicationContext.isServiceRunning(AudioPlayService::class.java.name)) {
+            bindToAudioService()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unbindAudioService()
+    }
+
     private fun init() {
         initObj()
         initNavBar()
+        initListeners()
         initSetUpAudioPlayerBottomSheet()
         initFetchSongsFromDevice()
         initObserver()
         initOpenHomeFragment()
     }
 
+    private fun initListeners() {
+        mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setOnClickListener {
+            AudioPlayService.newIntent(this, mCurrentPlayingSong).also { intent ->
+                // This service will get converted to foreground service using the PlayerNotificationManager notification Id.
+                startService(intent)
+            }
+        }
+    }
+
     private fun initObserver() {
         mSongViewModel?.getSongsLiveData()?.observe(this@MainActivity, Observer { list ->
+            mSongsListFromDevice?.clear()
+            mSongsListFromDevice?.addAll(list)
             mCurrentPlayingSong = AppUtil.getPlayingSongFromList(list)
             mCurrentPlayingSong?.let {
                 showBottomAudioPlayer(it)
@@ -167,7 +197,11 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         get() = mPlayerStatusLiveData
 
     override fun playAudio(songModel: SongModel?) {
-
+        songModel?.let {
+            mCurrentPlayingSong = songModel
+            showBottomAudioPlayer(songModel)
+            bindToAudioService()
+        }
     }
 
     override fun pauseAudio() {
@@ -226,5 +260,71 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             val viewModelSongs: SongsViewModel? = ViewModelProviders.of(this).get(SongsViewModel::class.java)
             viewModelSongs?.fetchAllSongsFromDevice()
         }
+    }
+
+    //audio service connection
+    private val connection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as AudioPlayService.PlayMusicServiceBinder
+            mAudioPlayService = binder.playMusicService
+
+            // Attach the ExoPlayer to the PlayerView.
+            mBottomAudioPlayerBinding.exoPlayerView.player = binder.exoPlayer
+
+            // Pass player updates to interested observers.
+            mAudioPlayService?.playerStatusLiveData?.observe(this@MainActivity, Observer {
+                mPlayerStatusLiveData.value = it
+
+                when(it) {
+                    is PlayerStatus.Playing -> {
+                        AppUtil.showToast(this@MainActivity,"Player Playing")
+                    }
+                    is PlayerStatus.Ended -> {
+                        AppUtil.showToast(this@MainActivity,"Player Ended")
+                        stopAudioService()
+                    }
+                    is PlayerStatus.Cancelled -> {
+                        AppUtil.showToast(this@MainActivity,"Player Cancelled")
+                        stopAudioService()
+                    }
+                    is PlayerStatus.Paused -> {
+                        AppUtil.showToast(this@MainActivity,"Player Paused")
+                    }
+                    is PlayerStatus.Error -> {
+                        AppUtil.showToast(this@MainActivity,"Player Error")
+                    }
+                }
+            })
+
+            // Show player after config change.
+            val songModel = AppUtil.getPlayingSongFromList(mSongsListFromDevice,songId = mAudioPlayService?.mSongId?.toLong())
+            showBottomAudioPlayer(songModel)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            mAudioPlayService = null
+        }
+    }
+
+    private fun bindToAudioService() {
+        if (mAudioPlayService == null) {
+            AudioPlayService.newIntent(this).also { intent ->
+                bindService(intent, connection, Context.BIND_AUTO_CREATE)
+            }
+        }
+    }
+
+    private fun unbindAudioService() {
+        if (mAudioPlayService != null) {
+            unbindService(connection)
+            mAudioPlayService = null
+        }
+    }
+
+    private fun stopAudioService() {
+        mAudioPlayService?.pause()
+        unbindAudioService()
+        stopService(Intent(this, AudioPlayService::class.java))
+        mAudioPlayService = null
     }
 }

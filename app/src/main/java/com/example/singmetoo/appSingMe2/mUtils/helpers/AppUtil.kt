@@ -57,16 +57,29 @@ class AppUtil {
             return homeItems
         }
 
-        fun getPlayingSongFromList(songListFromDevice:ArrayList<SongModel>?) : SongModel?{
+        fun getPlayingSongFromList(songListFromDevice:ArrayList<SongModel>?,songId:Long? = null) : SongModel?{
             var playingSongModel:SongModel? = null
-            songListFromDevice?.let {
-                for (item in it) {
-                    if(item.songCurrentlyPlaying) {
-                        playingSongModel = item
-                        break
+
+            if(songId == null) {
+                songListFromDevice?.let {
+                    for (item in it) {
+                        if (item.songCurrentlyPlaying) {
+                            playingSongModel = item
+                            break
+                        }
+                    }
+                }
+            } else {
+                songListFromDevice?.let {
+                    for (item in it) {
+                        if(item.songId == songId){
+                            playingSongModel = item
+                            break
+                        }
                     }
                 }
             }
+
             return playingSongModel
         }
     }
