@@ -196,13 +196,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             mBottomAudioPlayerBinding.audioPlayerPreviewArtistTv.text = it.songArtist ?: AppConstants.DEFAULT_ARTIST
             mBottomAudioPlayerBinding.audioPlayerPreviewTitleTv.isSelected = true
             mBottomAudioPlayerBinding.audioPlayerPreviewArtistTv.isSelected = true
-            if(songPaused) {
-                mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setImageResource(R.drawable.exo_icon_play)
-                mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag = AppConstants.SONG_TAG_PLAY
-            } else {
-                mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setImageResource(R.drawable.exo_icon_pause)
-                mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag = AppConstants.SONG_TAG_PAUSE
-            }
+            mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.togglePlayIcon(songPaused)
             mBottomAudioPlayerBinding.audioPlayerPreviewIv.setAlbumImage(AppUtil.getImageUriFromAlbum(it.songAlbumId))
         }
     }

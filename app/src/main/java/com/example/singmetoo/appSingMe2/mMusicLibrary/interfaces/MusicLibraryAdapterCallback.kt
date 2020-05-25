@@ -4,8 +4,8 @@ import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 
 interface MusicLibraryAdapterCallback {
 
-    fun selectedSongForPlaying(newSelectedSongForPlaying:SongModel?)
+    fun updateSelectedSongForPlaying(newSelectedSongForPlaying:SongModel?)
 
-    fun togglePlayingSong(newSelectedSongForPlaying: SongModel?, toPauseSong:Boolean)
+    fun toggleAudioPlayer(newSelectedSongForPlaying: SongModel?, toPauseSong:Boolean)
 
 }

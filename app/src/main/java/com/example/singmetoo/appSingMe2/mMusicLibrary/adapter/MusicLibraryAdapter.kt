@@ -38,14 +38,19 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
             }
 
             holder.itemBinding.mainViewCl.setOnClickListener {
-                holder.itemBinding.songTitleTv.isSelected = true
+                /*holder.itemBinding.songTitleTv.isSelected = true
                 holder.itemBinding.songArtistTv.isSelected = true
                 setPlayingSongView(holder.itemBinding)
                 if(selectedSongIndex != position) {
                     notifyItemChanged(selectedSongIndex)
                     selectedSongIndex = position
+                }*/
+                if(selectedSongIndex == position) {
+                    callback?.toggleAudioPlayer(list[position],true)
+                } else {
+                    callback?.updateSelectedSongForPlaying(list[position])
+                    callback?.toggleAudioPlayer(list[position],false)
                 }
-                callback?.selectedSongForPlaying(list[position])
             }
         }
     }

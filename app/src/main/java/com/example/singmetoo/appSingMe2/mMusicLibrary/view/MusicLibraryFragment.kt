@@ -1,8 +1,6 @@
 package com.example.singmetoo.appSingMe2.mMusicLibrary.view
 
-import android.content.ContentUris
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +19,7 @@ import com.example.singmetoo.appSingMe2.mMusicLibrary.interfaces.MusicLibraryAda
 import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsViewModel
+import com.example.singmetoo.audioPlayerHelper.PlayerStatus
 import com.example.singmetoo.databinding.LayoutMusicLibraryFragmentBinding
 
 
@@ -52,6 +51,11 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         init()
     }
 
+    override fun onResume() {
+        super.onResume()
+        commonBaseInterface?.hideBottomAudioPlayer()
+    }
+
     private fun init() {
         initObject()
         initView()
@@ -69,7 +73,6 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
             }
             itemAnimator = null
         }
-        commonBaseInterface?.hideBottomAudioPlayer()
     }
 
     private fun initObservers() {
@@ -78,6 +81,37 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
             mSongsListFromDevice?.addAll(it)
             updateView()
         })
+
+        commonBaseInterface?.playerStatusLiveData?.observe(this, Observer { playerStatus ->
+            handlePlayerStatusFromService(playerStatus)
+        })
+    }
+
+    private fun handlePlayerStatusFromService(playerStatus: PlayerStatus?) {
+        val playingSongModel = AppUtil.getPlayingSongFromList(mSongsListFromDevice,playerStatus?.songId?.toLong())
+        playingSongModel?.let {
+            if(it.songId != mPlayingSongModel?.songId) {
+                updateSelectedSongForPlaying(it)
+            }
+
+            when(playerStatus) {
+                is PlayerStatus.Playing -> {
+                    updateAudioPlayerHeader(false)
+                }
+                is PlayerStatus.Paused -> {
+                    updateAudioPlayerHeader(true)
+                }
+                is PlayerStatus.Cancelled -> {
+                    updateAudioPlayerHeader(true)
+                }
+                is PlayerStatus.Error -> {
+                    updateAudioPlayerHeader(true)
+                }
+                is PlayerStatus.Idle -> {
+                    updateAudioPlayerHeader(true)
+                }
+            }
+        }
     }
 
     private fun updateView() {
@@ -86,7 +120,7 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
                 mPlayingSongModel = AppUtil.getPlayingSongFromList(list)
                 mOldPlayingSongId = mPlayingSongModel?.songId
                 mNewPlayingSongId = mOldPlayingSongId
-                setTitleForSongPlaying()
+                updateAudioPlayerHeader(true)
                 mLayoutBinding.playingSongGroup.visibility = View.VISIBLE
                 mLayoutBinding.songsRv.visibility = View.VISIBLE
                 setMusicLibraryAdapter()
@@ -125,12 +159,13 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         mLayoutBinding.musicLibFragToolbar.setNavigationOnClickListener(navigationDrawerListener())
     }
 
-    private fun setTitleForSongPlaying() {
-        mLayoutBinding.toolbarTitle.isSelected = true
-        mLayoutBinding.toolbarSubtitle.isSelected = true
+    private fun updateAudioPlayerHeader(songPaused: Boolean) {
         mLayoutBinding.toolbarTitle.text = mPlayingSongModel?.songTitle
         mLayoutBinding.toolbarSubtitle.text = mPlayingSongModel?.songArtist
+        mLayoutBinding.playingSongControlsLayout.playIv.togglePlayIcon(songPaused)
         mLayoutBinding.defaultPlayingSongIv.setAlbumImage(AppUtil.getImageUriFromAlbum(mPlayingSongModel?.songAlbumId))
+        mLayoutBinding.toolbarTitle.isSelected = true
+        mLayoutBinding.toolbarSubtitle.isSelected = true
     }
 
     override fun onStop() {
@@ -138,7 +173,7 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         mSongViewModel?.updateCurrentlyPlayingSongFromDevice(mOldPlayingSongId,mNewPlayingSongId)
     }
 
-    override fun selectedSongForPlaying(newSelectedSongForPlaying: SongModel?) {
+    override fun updateSelectedSongForPlaying(newSelectedSongForPlaying: SongModel?) {
         val oldSelectedSongIndex:Int = mSongsListFromDevice?.indexOf(mPlayingSongModel)!!
         val newSelectedSongIndex:Int= mSongsListFromDevice?.indexOf(newSelectedSongForPlaying)!!
         if(oldSelectedSongIndex!=-1 && newSelectedSongIndex!=-1) {
@@ -147,12 +182,15 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         }
         mNewPlayingSongId = newSelectedSongForPlaying?.songId
         mPlayingSongModel = newSelectedSongForPlaying
-
-        setTitleForSongPlaying()
-        commonBaseInterface?.playAudio(newSelectedSongForPlaying,false)
     }
 
-    override fun togglePlayingSong(newSelectedSongForPlaying: SongModel?, toPauseSong: Boolean) {
-
+    override fun toggleAudioPlayer(newSelectedSongForPlaying: SongModel?, toPauseSong: Boolean) {
+        mLayoutBinding.toolbarTitle.isSelected = false
+        mLayoutBinding.toolbarSubtitle.isSelected = false
+        if(toPauseSong) {
+            commonBaseInterface?.pauseAudio()
+        } else {
+            commonBaseInterface?.playAudio(newSelectedSongForPlaying, false)
+        }
     }
 }

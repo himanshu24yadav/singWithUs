@@ -95,7 +95,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/song_control_barrier">
 
-            <include layout="@layout/layout_song_controls" />
+            <include
+                android:id="@+id/playing_song_controls_layout"
+                layout="@layout/layout_song_controls" />
 
         </RelativeLayout>
 

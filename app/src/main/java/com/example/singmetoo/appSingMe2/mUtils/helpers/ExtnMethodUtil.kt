@@ -64,9 +64,18 @@ fun Player.isPlayingSong() : Boolean{
 }
 
 fun ImageView.setAlbumImage(uri: Uri?) {
-    if(uri == null) {
+    setImageURI(uri)
+    if(drawable == null) {
         setImageResource(R.drawable.bg_default_playing_song)
+    }
+}
+
+fun ImageView.togglePlayIcon(songPaused:Boolean) {
+    tag = if(songPaused) {
+        setImageResource(R.drawable.exo_icon_play)
+        AppConstants.SONG_TAG_PLAY
     } else {
-        setImageURI(uri)
+        setImageResource(R.drawable.exo_icon_pause)
+        AppConstants.SONG_TAG_PAUSE
     }
 }
