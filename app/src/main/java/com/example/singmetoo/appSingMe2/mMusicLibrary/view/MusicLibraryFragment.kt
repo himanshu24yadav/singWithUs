@@ -170,7 +170,7 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         mLayoutBinding.musicLibFragToolbar.setNavigationOnClickListener(navigationDrawerListener())
     }
 
-    private fun updateAudioPlayerHeader(songPaused: Boolean) {
+    private fun updateAudioPlayerHeader(songPaused: Boolean,textSelection:Boolean = true) {
         mLayoutBinding.toolbarTitle.text = mCurrentPlayingSongModel?.songTitle
         mLayoutBinding.toolbarSubtitle.text = mCurrentPlayingSongModel?.songArtist
         mLayoutBinding.playingSongControlsLayout.playIv.togglePlayIcon(songPaused)
@@ -193,6 +193,7 @@ class MusicLibraryFragment : BaseFragment(),MusicLibraryAdapterCallback{
         }
         mNewPlayingSongId = newSelectedSongForPlaying?.songId
         mCurrentPlayingSongModel = newSelectedSongForPlaying
+        updateAudioPlayerHeader(songPaused = false, textSelection = false)
     }
 
     override fun toggleAudioPlayer(newSelectedSongForPlaying: SongModel?, toPauseSong: Boolean) {
