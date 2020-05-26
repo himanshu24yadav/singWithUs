@@ -60,7 +60,7 @@ fun Context.isServiceRunning(serviceClassName: String): Boolean {
     return activityManager?.getRunningServices(Integer.MAX_VALUE)?.any { it.service.className == serviceClassName } ?: false
 }
 
-fun Player.isPlayingSong() : Boolean{
+fun Player.isSongPlaying() : Boolean{
     return playbackState == Player.STATE_READY && playWhenReady
 }
 

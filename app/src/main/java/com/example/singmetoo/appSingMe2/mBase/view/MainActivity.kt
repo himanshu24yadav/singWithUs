@@ -110,7 +110,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             mSongsListFromDevice?.addAll(list)
             mCurrentPlayingSong = AppUtil.getPlayingSongFromList(list)
             mCurrentPlayingSong?.let {
-                showBottomAudioPlayer(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isPlayingSong())
+                showBottomAudioPlayer(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isSongPlaying())
             }
         })
     }
