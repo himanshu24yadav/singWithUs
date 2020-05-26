@@ -24,6 +24,7 @@
                 android:layout_width="36dp"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
+                android:layout_marginStart="8dp"
                 android:src="@drawable/bg_default_playing_song"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
