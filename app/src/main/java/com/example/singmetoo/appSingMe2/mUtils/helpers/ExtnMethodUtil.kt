@@ -10,7 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
-import com.google.android.exoplayer2.ExoPlayer
+import com.example.singmetoo.frescoHelper.FrescoHelper
+import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.exoplayer2.Player
 
 fun Context.fetchString(stringId:Int) : String {
@@ -77,5 +78,12 @@ fun ImageView.togglePlayIcon(songPaused:Boolean) {
     } else {
         setImageResource(R.drawable.exo_icon_pause)
         AppConstants.SONG_TAG_PAUSE
+    }
+}
+
+fun SimpleDraweeView.setAlbumImageFromFresco(imagePath: String? = null, context:Context?){
+    imagePath?.let {
+        controller = FrescoHelper.getDraweeController(imagePath,this)
+        hierarchy = context?.let { ctx -> FrescoHelper.getGenericHierarchyBuilderForSongItem(ctx) }
     }
 }
