@@ -64,6 +64,10 @@ fun Player.isPlayingSong() : Boolean{
     return playbackState == Player.STATE_READY && playWhenReady
 }
 
+fun Player.isSongPaused() : Boolean {
+    return playbackState == Player.STATE_READY && !playWhenReady
+}
+
 fun ImageView.setAlbumImage(uri: Uri?) {
     setImageURI(uri)
     if(drawable == null) {

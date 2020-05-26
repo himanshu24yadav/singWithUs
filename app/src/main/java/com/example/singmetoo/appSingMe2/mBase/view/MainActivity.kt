@@ -260,8 +260,12 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun startAudioService() {
         if(mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag == AppConstants.SONG_TAG_PLAY) {
-            AudioPlayService.newIntent(this, mCurrentPlayingSong).also { intent ->
-                startService(intent)
+            if(AppUtil.toResumePlayingSong(mCurrentPlayingSong?.songId,mAudioPlayService?.mSongId?.toLong(),mBottomAudioPlayerBinding.exoPlayerView.player)){
+                mAudioPlayService?.resume()
+            } else {
+                AudioPlayService.newIntent(this, mCurrentPlayingSong).also { intent ->
+                    startService(intent)
+                }
             }
         } else {
             mAudioPlayService?.pause()
@@ -304,8 +308,8 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun playAudio(songModel: SongModel?,toShowBottomAudioPlayer: Boolean) {
         songModel?.let {
-            mCurrentPlayingSong = songModel
-            updateAudioPlayerDetails(songModel,true)
+            updateAudioPlayerDetails(it, true)
+            mCurrentPlayingSong = it
             startAudioService()
         }
     }

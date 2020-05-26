@@ -7,6 +7,8 @@ import android.widget.Toast
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 
 class AppUtil {
 
@@ -92,6 +94,10 @@ class AppUtil {
                 uri =  ContentUris.withAppendedId(sArtworkUri, it)
             }
             return uri
+        }
+
+        fun toResumePlayingSong(newSongId:Long?,audioServiceSongId:Long?,exoPlayer:Player?) : Boolean {
+            return (newSongId == audioServiceSongId) && (exoPlayer?.isSongPaused()!!)
         }
     }
 
