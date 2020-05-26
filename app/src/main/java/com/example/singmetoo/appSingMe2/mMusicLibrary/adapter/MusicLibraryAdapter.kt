@@ -8,7 +8,9 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mMusicLibrary.interfaces.MusicLibraryAdapterCallback
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.helpers.fetchColor
+import com.example.singmetoo.appSingMe2.mUtils.helpers.setAlbumImage
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.databinding.LayoutSongItemBinding
 
@@ -29,6 +31,7 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
 
             holder.itemBinding.songTitleTv.isSelected = false
             holder.itemBinding.songArtistTv.isSelected = false
+            holder.itemBinding.songIv.setAlbumImage(AppUtil.getImageUriFromAlbum(list[position].songAlbumId))
 
             //set view if currently playing song
             if(selectedSongIndex == position) {
@@ -38,18 +41,14 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
             }
 
             holder.itemBinding.mainViewCl.setOnClickListener {
-                /*holder.itemBinding.songTitleTv.isSelected = true
+                holder.itemBinding.songTitleTv.isSelected = true
                 holder.itemBinding.songArtistTv.isSelected = true
                 setPlayingSongView(holder.itemBinding)
                 if(selectedSongIndex != position) {
                     notifyItemChanged(selectedSongIndex)
-                    selectedSongIndex = position
-                }*/
-                if(selectedSongIndex == position) {
-                    callback?.toggleAudioPlayer(list[position],true)
-                } else {
                     callback?.updateSelectedSongForPlaying(list[position])
                     callback?.toggleAudioPlayer(list[position],false)
+                    selectedSongIndex = position
                 }
             }
         }
@@ -59,7 +58,6 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
         itemBinding.songTitleTv.setTypeface(null,Typeface.NORMAL)
         itemBinding.songArtistTv.setTypeface(null,Typeface.ITALIC)
         itemBinding.songArtistTv.setTextColor(mContext?.fetchColor(R.color.song_item_artist_text_color)!!)
-        itemBinding.songPlayIv.setImageResource(R.drawable.ic_play_circle_48dp)
         itemBinding.mainViewCl.setBackgroundColor(mContext?.fetchColor(R.color.song_item_card_bg_color)!!)
     }
 
@@ -67,7 +65,6 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
         itemBinding.songTitleTv.setTypeface(null,Typeface.BOLD)
         itemBinding.songArtistTv.setTypeface(null,Typeface.BOLD_ITALIC)
         itemBinding.songArtistTv.setTextColor(mContext?.fetchColor(R.color.white)!!)
-        itemBinding.songPlayIv.setImageResource(R.drawable.ic_pause_circle_48dp)
         itemBinding.mainViewCl.setBackgroundColor(mContext?.fetchColor(R.color.bg_song_item_playing)!!)
     }
 
