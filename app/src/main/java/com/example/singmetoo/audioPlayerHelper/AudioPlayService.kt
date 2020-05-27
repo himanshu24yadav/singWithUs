@@ -24,7 +24,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
 import com.example.singmetoo.appSingMe2.mUtils.helpers.AppConstants
+import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
+import com.example.singmetoo.frescoHelper.FrescoHelper
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ExoPlayerFactory.newSimpleInstance
 import com.google.android.exoplayer2.audio.AudioAttributes
@@ -49,6 +51,7 @@ class AudioPlayService : Service() {
         fun newIntent(context: Context, songDetails: SongModel? = null) = Intent(context, AudioPlayService::class.java).apply {
             songDetails?.let {
                 putExtra(AppConstants.ARG_SONG_ID, it.songId.toString())
+                putExtra(AppConstants.ARG_SONG_ALBUM_ID, it.songAlbumId)
                 it.songTitle?.let { title -> putExtra(AppConstants.ARG_SONG_TITLE, title) }
                 it.songPath?.let{ songPath -> putExtra(AppConstants.ARG_SONG_PATH, Uri.parse(songPath)) }
                 putExtra(AppConstants.ARG_SONG_START_POS, 0L)
@@ -63,6 +66,7 @@ class AudioPlayService : Service() {
     private var mediaSessionConnector: MediaSessionConnector? = null
     var mSongId: String? = null
     var mSongTitle: String? = null
+    var mAlbumId: Long? = null
     private var mPlayerStatusLiveData = MutableLiveData<PlayerStatus>()
     val playerStatusLiveData: LiveData<PlayerStatus>
         get() = mPlayerStatusLiveData
@@ -106,6 +110,7 @@ class AudioPlayService : Service() {
             intent.getParcelableExtra<Uri>(AppConstants.ARG_SONG_PATH)?.also { uri ->
                 mSongId = intent.getStringExtra(AppConstants.ARG_SONG_ID)
                 mSongTitle = intent.getStringExtra(AppConstants.ARG_SONG_TITLE)
+                mAlbumId = intent.getLongExtra(AppConstants.ARG_SONG_ALBUM_ID,0)
                 val startPosition = intent.getLongExtra(AppConstants.ARG_SONG_START_POS, C.POSITION_UNSET.toLong())
                 play(uri, startPosition)
             } ?: R.string.playback_uri_was_not_set
@@ -150,7 +155,7 @@ class AudioPlayService : Service() {
 
                 @Nullable
                 override fun getCurrentLargeIcon(player: Player, callback: PlayerNotificationManager.BitmapCallback): Bitmap? {
-                    return getBitmapFromVectorDrawable(applicationContext)
+                    return getBitmapForSong()
                 }
             },
             object : PlayerNotificationManager.NotificationListener {
@@ -195,7 +200,7 @@ class AudioPlayService : Service() {
         mediaSessionConnector = MediaSessionConnector(mediaSession).apply {
             setQueueNavigator(object : TimelineQueueNavigator(mediaSession) {
                 override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
-                    val bitmap = getBitmapFromVectorDrawable(applicationContext)
+                    val bitmap: Bitmap? = getBitmapForSong()
                     val extras = Bundle().apply {
                         putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
                         putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, bitmap)
@@ -240,15 +245,19 @@ class AudioPlayService : Service() {
     }
 
     @MainThread
-    private fun getBitmapFromVectorDrawable(context: Context, @DrawableRes drawableId: Int = R.drawable.bg_default_playing_song): Bitmap? {
-        return ContextCompat.getDrawable(context, drawableId)?.let {
-            val drawable = DrawableCompat.wrap(it).mutate()
-            val bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(bitmap)
-            drawable.setBounds(0, 0, canvas.width, canvas.height)
-            drawable.draw(canvas)
-            bitmap
+    private fun getBitmapForSong(context: Context = applicationContext, @DrawableRes drawableId: Int = R.drawable.bg_default_playing_song): Bitmap? {
+        var bitmap: Bitmap? = FrescoHelper.getBitmapFromImagePath(AppUtil.getImageUriFromAlbum(mAlbumId).toString())
+        if(bitmap == null) {
+            bitmap = ContextCompat.getDrawable(context, drawableId)?.let {
+                val drawable = DrawableCompat.wrap(it).mutate()
+                val bitmapFromDrawable = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmapFromDrawable)
+                drawable.setBounds(0, 0, canvas.width, canvas.height)
+                drawable.draw(canvas)
+                bitmapFromDrawable
+            }
         }
+        return bitmap
     }
 
     private inner class PlayerEventListener : Player.EventListener {
