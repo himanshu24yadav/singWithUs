@@ -34,6 +34,7 @@ import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerNotificationManager
 import com.google.android.exoplayer2.upstream.DataSource
@@ -180,12 +181,10 @@ class AudioPlayService : Service() {
             }
 
         ).apply {
-            // Omit skip previous and next actions.
-            setUseNavigationActions(false)
-
-            // Add stop action.
-            setUseStopAction(true)
-
+            setUseNavigationActions(true)
+            setRewindIncrementMs(0)
+            setFastForwardIncrementMs(0)
+            setUseStopAction(false)
             setPlayer(mExoPlayer)
         }
     }
@@ -224,7 +223,7 @@ class AudioPlayService : Service() {
     fun play(uri: Uri, startPosition: Long) {
         val userAgent = Util.getUserAgent(applicationContext, BuildConfig.APPLICATION_ID)
         val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(applicationContext, userAgent)
-        val mediaSource: MediaSource = ExtractorMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
+        val mediaSource: MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
         val haveStartPosition = startPosition != C.POSITION_UNSET.toLong()
         if (haveStartPosition) {
             mExoPlayer.seekTo(startPosition)
