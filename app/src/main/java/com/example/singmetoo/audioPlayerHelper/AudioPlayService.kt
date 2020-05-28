@@ -26,12 +26,14 @@ import com.example.singmetoo.appSingMe2.mBase.view.MainActivity
 import com.example.singmetoo.appSingMe2.mUtils.helpers.AppConstants
 import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
+import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsRepository
 import com.example.singmetoo.frescoHelper.FrescoHelper
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ExoPlayerFactory.newSimpleInstance
 import com.google.android.exoplayer2.audio.AudioAttributes
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
 import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
+import com.google.android.exoplayer2.source.ConcatenatingMediaSource
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -42,7 +44,7 @@ import com.google.android.exoplayer2.util.Util
 
 private const val PLAYBACK_CHANNEL_ID = "playback_channel"
 private const val PLAYBACK_NOTIFICATION_ID = 1
-private const val MEDIA_SESSION_TAG = "sed_audio"
+private const val MEDIA_SESSION_TAG = "media_session_audio"
 
 class AudioPlayService : Service() {
 
@@ -50,11 +52,7 @@ class AudioPlayService : Service() {
         @MainThread
         fun newIntent(context: Context, songDetails: SongModel? = null) = Intent(context, AudioPlayService::class.java).apply {
             songDetails?.let {
-                putExtra(AppConstants.ARG_SONG_ID, it.songId.toString())
-                putExtra(AppConstants.ARG_SONG_ALBUM_ID, it.songAlbumId)
-                it.songTitle?.let { title -> putExtra(AppConstants.ARG_SONG_TITLE, title) }
-                it.songPath?.let{ songPath -> putExtra(AppConstants.ARG_SONG_PATH, Uri.parse(songPath)) }
-                putExtra(AppConstants.ARG_SONG_START_POS, 0L)
+                putExtra(AppConstants.ARG_SONG_ID, it.songId)
             }
         }
     }
@@ -65,8 +63,8 @@ class AudioPlayService : Service() {
     private var mediaSession: MediaSessionCompat? = null
     private var mediaSessionConnector: MediaSessionConnector? = null
     var mSongId: String? = null
-    var mSongTitle: String? = null
-    var mAlbumId: Long? = null
+    private var mSongList: ArrayList<SongModel>? = ArrayList()
+    var mCurrentlyPlayingSongId: Long? = null
     private var mPlayerStatusLiveData = MutableLiveData<PlayerStatus>()
     val playerStatusLiveData: LiveData<PlayerStatus>
         get() = mPlayerStatusLiveData
@@ -105,16 +103,35 @@ class AudioPlayService : Service() {
 
     @MainThread
     private fun handleIntent(intent: Intent?) {
-        // Play
+
+        // prepare ExoPlayer
         intent?.let {
-            intent.getParcelableExtra<Uri>(AppConstants.ARG_SONG_PATH)?.also { uri ->
-                mSongId = intent.getStringExtra(AppConstants.ARG_SONG_ID)
-                mSongTitle = intent.getStringExtra(AppConstants.ARG_SONG_TITLE)
-                mAlbumId = intent.getLongExtra(AppConstants.ARG_SONG_ALBUM_ID,0)
-                val startPosition = intent.getLongExtra(AppConstants.ARG_SONG_START_POS, C.POSITION_UNSET.toLong())
-                play(uri, startPosition)
-            } ?: R.string.playback_uri_was_not_set
+            mSongList = SongsRepository.mSongLiveData?.value ?: ArrayList()
+            mSongList?.let {
+                mCurrentlyPlayingSongId = intent.getLongExtra(AppConstants.ARG_SONG_ID,0)
+                prepareExoPlayer()
+            }
         }
+    }
+
+    private fun prepareExoPlayer() {
+        val userAgent = Util.getUserAgent(applicationContext, BuildConfig.APPLICATION_ID)
+        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(applicationContext, userAgent)
+        val concatenatingMediaSource: ConcatenatingMediaSource? = ConcatenatingMediaSource()
+        var windowIndex = 0
+
+        mSongList?.let {
+            for (index in 0 until it.size) {
+                val songItem:SongModel? = it[index]
+                if(songItem?.songId == mCurrentlyPlayingSongId) { windowIndex =  index }
+                val mediaSource: MediaSource? = ProgressiveMediaSource.Factory(dataSourceFactory).setTag(songItem?.songId).createMediaSource(Uri.parse(songItem?.songPath))
+                mediaSource?.let { ms -> concatenatingMediaSource?.addMediaSource(ms) }
+            }
+        }
+
+        mExoPlayer.seekTo(windowIndex,0)
+        mExoPlayer.prepare(concatenatingMediaSource, false, false)
+        mExoPlayer.playWhenReady = true
     }
 
     private fun initialiseExoPlayer() {
@@ -140,7 +157,11 @@ class AudioPlayService : Service() {
             object : PlayerNotificationManager.MediaDescriptionAdapter {
 
                 override fun getCurrentContentTitle(player: Player): String {
-                    return mSongTitle ?: getString(R.string.loading_dots)
+                    return if(mSongList!!.size > 0) {
+                        mSongList!![player.currentWindowIndex].songTitle ?: getString(R.string.loading_dots)
+                    } else {
+                        getString(R.string.loading_dots)
+                    }
                 }
 
                 @Nullable
@@ -155,7 +176,7 @@ class AudioPlayService : Service() {
 
                 @Nullable
                 override fun getCurrentLargeIcon(player: Player, callback: PlayerNotificationManager.BitmapCallback): Bitmap? {
-                    return getBitmapForSong()
+                    return getBitmapForSong(player)
                 }
             },
             object : PlayerNotificationManager.NotificationListener {
@@ -198,13 +219,17 @@ class AudioPlayService : Service() {
         mediaSessionConnector = MediaSessionConnector(mediaSession).apply {
             setQueueNavigator(object : TimelineQueueNavigator(mediaSession) {
                 override fun getMediaDescription(player: Player, windowIndex: Int): MediaDescriptionCompat {
-                    val bitmap: Bitmap? = getBitmapForSong()
+                    val bitmap: Bitmap? = getBitmapForSong(player)
                     val extras = Bundle().apply {
                         putParcelable(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, bitmap)
                         putParcelable(MediaMetadataCompat.METADATA_KEY_DISPLAY_ICON, bitmap)
                     }
 
-                    val title = mSongTitle ?: getString(R.string.loading_dots)
+                    val title = if(mSongList!!.size > 0) {
+                        mSongList!![player.currentWindowIndex].songTitle ?: getString(R.string.loading_dots)
+                    } else {
+                        getString(R.string.loading_dots)
+                    }
 
                     return MediaDescriptionCompat.Builder()
                         .setIconBitmap(bitmap)
@@ -219,16 +244,9 @@ class AudioPlayService : Service() {
     }
 
     @MainThread
-    fun play(uri: Uri, startPosition: Long) {
-        val userAgent = Util.getUserAgent(applicationContext, BuildConfig.APPLICATION_ID)
-        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(applicationContext, userAgent)
-        val mediaSource: MediaSource = ProgressiveMediaSource.Factory(dataSourceFactory).createMediaSource(uri)
-        val haveStartPosition = startPosition != C.POSITION_UNSET.toLong()
-        if (haveStartPosition) {
-            mExoPlayer.seekTo(startPosition)
-        }
-
-        mExoPlayer.prepare(mediaSource, !haveStartPosition, false)
+    fun play(songId:Long?) {
+        val windowIndex = mSongList?.indexOf(AppUtil.getPlayingSongFromList(mSongList,songId)) ?: 0
+        mExoPlayer.seekTo(windowIndex,0)
         mExoPlayer.playWhenReady = true
     }
 
@@ -243,10 +261,15 @@ class AudioPlayService : Service() {
     }
 
     @MainThread
-    private fun getBitmapForSong(context: Context = applicationContext, @DrawableRes drawableId: Int = R.drawable.bg_default_playing_song): Bitmap? {
-        var bitmap: Bitmap? = FrescoHelper.getBitmapFromImagePath(AppUtil.getImageUriFromAlbum(mAlbumId).toString())
+    private fun getBitmapForSong(player: Player, @DrawableRes drawableId: Int = R.drawable.bg_default_playing_song): Bitmap? {
+        val albumId : Long? = if(mSongList!!.size > 0) {
+            mSongList!![player.currentWindowIndex].songAlbumId
+        } else {
+            null
+        }
+        var bitmap: Bitmap? = FrescoHelper.getBitmapFromImagePath(AppUtil.getImageUriFromAlbum(albumId).toString())
         if(bitmap == null) {
-            bitmap = ContextCompat.getDrawable(context, drawableId)?.let {
+            bitmap = ContextCompat.getDrawable(applicationContext, drawableId)?.let {
                 val drawable = DrawableCompat.wrap(it).mutate()
                 val bitmapFromDrawable = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
                 val canvas = Canvas(bitmapFromDrawable)
@@ -297,6 +320,15 @@ class AudioPlayService : Service() {
         override fun onPlayerError(e: ExoPlaybackException?) {
             mSongId?.let { mPlayerStatusLiveData.value =
                 PlayerStatus.Error(it, e)
+            }
+        }
+
+        override fun onPositionDiscontinuity(reason: Int) {
+            mExoPlayer.currentTag?.let {
+                mCurrentlyPlayingSongId = it.toString().toLong()
+            }
+            mCurrentlyPlayingSongId?.let {
+                mPlayerStatusLiveData.value = PlayerStatus.Playing(it.toString())
             }
         }
 
