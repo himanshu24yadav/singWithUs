@@ -35,27 +35,9 @@ object SongsRepository {
         }
     }
 
-    fun updateCurrentlyPlayingSongFromDevice(oldPlayingSongId:Long?, newPlayingSongId:Long?) {
-        val updateSongList: ArrayList<SongModel>? = mSongLiveData?.value
-        var oldPlayingSongModel:SongModel? = null
-        var newPlayingSongModel:SongModel? = null
-
-        updateSongList?.let {
-            for (item in it) {
-                item.songCurrentlyPlaying = item.songId == newPlayingSongId
-                when(item.songId) {
-                    oldPlayingSongId -> oldPlayingSongModel = item
-                    newPlayingSongId -> newPlayingSongModel = item
-                }
-            }
-        }
-        mSongLiveData?.value = updateSongList
-
+    fun updateCurrentlyPlayingSongFromDevice(newPlayingSongId:Long?) {
         CoroutineScope(Dispatchers.Main + Job() + coroutineExceptionHandler).launch {
-            if(oldPlayingSongModel!=null && newPlayingSongModel!=null) {
-                updateSongDetailsFromDevice(oldPlayingSongModel)
-                updateSongDetailsFromDevice(newPlayingSongModel)
-            }
+            updatePlayingSongDetail(newPlayingSongId)
         }
     }
 
@@ -133,10 +115,14 @@ object SongsRepository {
         }
     }
 
-    private suspend fun updateSongDetailsFromDevice(songModelToUpdate:SongModel?) {
+    private suspend fun updatePlayingSongDetail(songId: Long?) {
         withContext(Dispatchers.Default) {
-            songModelToUpdate?.let {
-                appDatabase?.daoSongsFromDevice()?.updateSongDetail(songModelToUpdate)
+            val copySongList:ArrayList<SongModel>? = mSongLiveData?.value?.clone() as? ArrayList<SongModel>
+            copySongList?.let {
+                for (item in it){
+                    item.songCurrentlyPlaying = songId == item.songId
+                    appDatabase?.daoSongsFromDevice()?.updateSongDetail(item)
+                }
             }
         }
     }

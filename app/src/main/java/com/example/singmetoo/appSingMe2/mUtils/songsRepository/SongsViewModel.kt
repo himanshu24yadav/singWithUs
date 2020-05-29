@@ -9,8 +9,8 @@ class SongsViewModel : ViewModel() {
         SongsRepository.fetchAllSongsFromDevice(toRefreshList)
     }
 
-    fun updateCurrentlyPlayingSongFromDevice(oldPlayingSongId: Long?, newPlayingSongId:Long?) {
-        SongsRepository.updateCurrentlyPlayingSongFromDevice(oldPlayingSongId,newPlayingSongId)
+    fun updateCurrentlyPlayingSongFromDevice(newPlayingSongId:Long?) {
+        SongsRepository.updateCurrentlyPlayingSongFromDevice(newPlayingSongId)
     }
 
     fun getSongsLiveData() : LiveData<ArrayList<SongModel>>? {

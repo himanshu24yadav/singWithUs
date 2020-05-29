@@ -46,7 +46,6 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
                 setPlayingSongView(holder.itemBinding)
                 if(selectedSongIndex != position) {
                     notifyItemChanged(selectedSongIndex)
-                    callback?.updateSelectedSongForPlaying(list[position])
                     callback?.toggleAudioPlayer(list[position],false)
                     selectedSongIndex = position
                 }

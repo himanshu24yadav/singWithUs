@@ -45,6 +45,8 @@ import com.google.android.exoplayer2.util.Util
 private const val PLAYBACK_CHANNEL_ID = "playback_channel"
 private const val PLAYBACK_NOTIFICATION_ID = 1
 private const val MEDIA_SESSION_TAG = "media_session_audio"
+private const val FROM_ON_BIND = "FROM_ON_BIND"
+private const val FROM_ON_START_COMMAND = "FROM_ON_START_COMMAND"
 
 class AudioPlayService : Service() {
 
@@ -62,7 +64,6 @@ class AudioPlayService : Service() {
     private var playerNotificationManager: PlayerNotificationManager? = null
     private var mediaSession: MediaSessionCompat? = null
     private var mediaSessionConnector: MediaSessionConnector? = null
-    var mSongId: String? = null
     private var mSongList: ArrayList<SongModel>? = ArrayList()
     var mCurrentlyPlayingSongId: Long? = null
     private var mPlayerStatusLiveData = MutableLiveData<PlayerStatus>()
@@ -70,7 +71,7 @@ class AudioPlayService : Service() {
         get() = mPlayerStatusLiveData
 
     override fun onBind(intent: Intent?): IBinder? {
-        handleIntent(intent)
+        //handleIntent(intent, FROM_ON_BIND)
         return PlayMusicServiceBinder()
     }
 
@@ -85,7 +86,7 @@ class AudioPlayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        handleIntent(intent)
+        handleIntent(intent, FROM_ON_START_COMMAND)
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -102,14 +103,14 @@ class AudioPlayService : Service() {
     }
 
     @MainThread
-    private fun handleIntent(intent: Intent?) {
+    private fun handleIntent(intent: Intent?,from: String) {
 
         // prepare ExoPlayer
         intent?.let {
             mSongList = SongsRepository.mSongLiveData?.value ?: ArrayList()
             mSongList?.let {
                 mCurrentlyPlayingSongId = intent.getLongExtra(AppConstants.ARG_SONG_ID,0)
-                prepareExoPlayer()
+                if(from == FROM_ON_START_COMMAND) prepareExoPlayer()
             }
         }
     }
@@ -185,7 +186,7 @@ class AudioPlayService : Service() {
                 }
 
                 override fun onNotificationCancelled(notificationId: Int) {
-                    mPlayerStatusLiveData.value = PlayerStatus.Cancelled(mSongId)
+                    mPlayerStatusLiveData.value = PlayerStatus.Cancelled(mCurrentlyPlayingSongId.toString())
                     stopSelf()
                 }
 
@@ -286,49 +287,44 @@ class AudioPlayService : Service() {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
             when(playbackState) {
                 Player.STATE_READY -> {
+                    mExoPlayer.currentTag?.let {
+                        mCurrentlyPlayingSongId = it.toString().toLong()
+                    }
+
                     if (mExoPlayer.playWhenReady) {
-                        mSongId?.let { mPlayerStatusLiveData.value =
-                            PlayerStatus.Playing(it)
+                        mCurrentlyPlayingSongId?.let { mPlayerStatusLiveData.value =
+                            PlayerStatus.Playing(it.toString())
                         }
                     } else {
-                        mSongId?.let { mPlayerStatusLiveData.value =
-                            PlayerStatus.Paused(it)
+                        mCurrentlyPlayingSongId?.let { mPlayerStatusLiveData.value =
+                            PlayerStatus.Paused(it.toString())
                         }
                     }
                 }
 
                 Player.STATE_ENDED -> {
-                    mSongId?.let { mPlayerStatusLiveData.value =
-                        PlayerStatus.Ended(it)
+                    mCurrentlyPlayingSongId?.let { mPlayerStatusLiveData.value =
+                        PlayerStatus.Ended(it.toString())
                     }
                 }
 
                 Player.STATE_BUFFERING -> {
-                    mSongId?.let { mPlayerStatusLiveData.value =
-                        PlayerStatus.Buffering(it)
+                    mCurrentlyPlayingSongId?.let { mPlayerStatusLiveData.value =
+                        PlayerStatus.Buffering(it.toString())
                     }
                 }
 
                 Player.STATE_IDLE -> {
-                    mSongId?.let { mPlayerStatusLiveData.value =
-                        PlayerStatus.Idle(it)
+                    mCurrentlyPlayingSongId?.let { mPlayerStatusLiveData.value =
+                        PlayerStatus.Idle(it.toString())
                     }
                 }
             }
         }
 
         override fun onPlayerError(e: ExoPlaybackException?) {
-            mSongId?.let { mPlayerStatusLiveData.value =
-                PlayerStatus.Error(it, e)
-            }
-        }
-
-        override fun onPositionDiscontinuity(reason: Int) {
-            mExoPlayer.currentTag?.let {
-                mCurrentlyPlayingSongId = it.toString().toLong()
-            }
-            mCurrentlyPlayingSongId?.let {
-                mPlayerStatusLiveData.value = PlayerStatus.Playing(it.toString())
+            mCurrentlyPlayingSongId?.let { mPlayerStatusLiveData.value =
+                PlayerStatus.Error(it.toString(), e)
             }
         }
 

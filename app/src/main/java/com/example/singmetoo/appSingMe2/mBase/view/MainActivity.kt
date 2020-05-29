@@ -13,6 +13,7 @@ import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.singmetoo.R
@@ -45,8 +46,9 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     private var drawerManager: DrawerManager? = null
     private var mBottomSheetAudioPlayerBehaviour: BottomSheetBehavior<View>? = null
     private var mPlayerStatusLiveData: LiveData<PlayerStatus>? = null
+    private var mPlayingSongLiveData: MutableLiveData<SongModel>? = MutableLiveData()
+    private var mSongListFromDeviceLiveData: MutableLiveData<ArrayList<SongModel>>? = MutableLiveData()
     private var mSongViewModel : SongsViewModel? = null
-    private var mCurrentPlayingSong: SongModel? = null
     private var mAudioPlayService: AudioPlayService? = null
     private var mSongsListFromDevice: ArrayList<SongModel>? = ArrayList()
 
@@ -85,6 +87,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         super.onStop()
         Log.e(TAG,"onStop")
         unbindAudioService()
+        mSongViewModel?.updateCurrentlyPlayingSongFromDevice(mPlayingSongLiveData?.value?.songId)
     }
 
     private fun init() {
@@ -108,9 +111,10 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             Log.e(TAG,"Observer")
             mSongsListFromDevice?.clear()
             mSongsListFromDevice?.addAll(list)
-            mCurrentPlayingSong = AppUtil.getPlayingSongFromList(list)
-            mCurrentPlayingSong?.let {
-                showBottomAudioPlayer(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isSongPlaying())
+            mSongListFromDeviceLiveData?.value = mSongsListFromDevice
+            mPlayingSongLiveData?.value = AppUtil.getPlayingSongFromList(list)
+            mPlayingSongLiveData?.value?.let {
+                showBottomAudioPlayer(it)
             }
         })
     }
@@ -224,9 +228,10 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun handlePlayerStatusChangeFromService(playerStatus: PlayerStatus) {
         val songModel = AppUtil.getPlayingSongFromList(mSongsListFromDevice,songId = playerStatus.songId?.toLong())
+        mPlayingSongLiveData?.value = songModel
         when(playerStatus) {
             is PlayerStatus.Playing -> {
-                songModel?.let { updateAudioPlayerDetails(songModel,false) }
+                songModel?.let { updateAudioPlayerDetails(it,false) }
             }
             is PlayerStatus.Ended -> {
                 songModel?.let { updateAudioPlayerDetails(it,true) }
@@ -260,10 +265,10 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun startAudioService() {
         if(mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag == AppConstants.SONG_TAG_PLAY) {
-            if(AppUtil.toResumePlayingSong(mCurrentPlayingSong?.songId,mAudioPlayService?.mSongId?.toLong(),mBottomAudioPlayerBinding.exoPlayerView.player)){
+            if(AppUtil.toResumePlayingSong(mPlayingSongLiveData?.value?.songId,mAudioPlayService?.mCurrentlyPlayingSongId,mBottomAudioPlayerBinding.exoPlayerView.player)){
                 mAudioPlayService?.resume()
             } else {
-                AudioPlayService.newIntent(this, mCurrentPlayingSong).also { intent ->
+                AudioPlayService.newIntent(this, mPlayingSongLiveData?.value).also { intent ->
                     startService(intent)
                 }
             }
@@ -306,27 +311,33 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     override val playerStatusLiveData: LiveData<PlayerStatus>?
         get() = mPlayerStatusLiveData
 
+    override val playingSongLiveData: LiveData<SongModel>?
+        get() = mPlayingSongLiveData
+
+    override val songListFromDeviceLiveData: LiveData<ArrayList<SongModel>>?
+        get() = mSongListFromDeviceLiveData
+
     override fun playAudio(songModel: SongModel?,toShowBottomAudioPlayer: Boolean) {
         songModel?.let {
             updateAudioPlayerDetails(it, true)
-            mCurrentPlayingSong = it
+            mPlayingSongLiveData?.value = it
             startAudioService()
         }
     }
 
     override fun pauseAudio() {
-        mCurrentPlayingSong?.let {
+        mPlayingSongLiveData?.value?.let {
             mAudioPlayService?.pause()
-            updateAudioPlayerDetails(mCurrentPlayingSong,true)
+            updateAudioPlayerDetails(mPlayingSongLiveData?.value,true)
         }
     }
 
     override fun stopAudio() {
     }
 
-    override fun showBottomAudioPlayer(songToPlay:SongModel?,songPaused: Boolean) {
+    override fun showBottomAudioPlayer(songToPlay:SongModel?) {
         songToPlay?.let {
-            updateAudioPlayerDetails(it,songPaused)
+            updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isSongPlaying())
             mBottomAudioPlayerBinding.audioPlayerMainCl.visibility = View.VISIBLE
             mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
             mBottomAudioPlayerBinding.exoPlayerView.showController()
@@ -357,6 +368,13 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun isDrawerOpen() : Boolean{
         return mLayoutBinding.drawerLayout.isDrawerOpen(GravityCompat.START)
+    }
+
+    override fun updatePlayingSong(playingSong: SongModel?) {
+        playingSong?.let {
+            updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isSongPlaying())
+            mPlayingSongLiveData?.value = it
+        }
     }
 
     override fun onProfileClick(view:View) {
