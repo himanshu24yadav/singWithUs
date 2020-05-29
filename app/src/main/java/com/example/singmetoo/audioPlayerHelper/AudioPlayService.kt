@@ -71,7 +71,7 @@ class AudioPlayService : Service() {
         get() = mPlayerStatusLiveData
 
     override fun onBind(intent: Intent?): IBinder? {
-        //handleIntent(intent, FROM_ON_BIND)
+        handleIntent(intent, FROM_ON_BIND)
         return PlayMusicServiceBinder()
     }
 
