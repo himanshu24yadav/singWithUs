@@ -101,9 +101,11 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
         when (playerStatus) {
             is PlayerStatus.Playing -> {
                 updateAudioPlayerHeader(false)
+                changeSong(playerStatus.songId)
             }
             is PlayerStatus.Paused -> {
                 updateAudioPlayerHeader(true)
+                changeSong(playerStatus.songId)
             }
             is PlayerStatus.Cancelled -> {
                 updateAudioPlayerHeader(true)
@@ -185,6 +187,14 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
         )
         mLayoutBinding.toolbarTitle.isSelected = true
         mLayoutBinding.toolbarSubtitle.isSelected = true
+    }
+
+    private fun changeSong(songToPlayId:String?) {
+        val position : Int = mSongsListFromDevice?.indexOfFirst { it.songId.toString() == songToPlayId } ?: 0
+        val alreadySelectedIndex : Int = mSongsAdapter?.selectedSongIndex ?: 0
+        mSongsAdapter?.selectedSongIndex = position
+        mSongsAdapter?.notifyItemChanged(alreadySelectedIndex)
+        mSongsAdapter?.notifyItemChanged(position)
     }
 
     override fun onStop() {

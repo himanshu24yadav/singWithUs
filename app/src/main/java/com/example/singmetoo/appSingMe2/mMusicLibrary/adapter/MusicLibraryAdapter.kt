@@ -16,7 +16,7 @@ import com.example.singmetoo.databinding.LayoutSongItemBinding
 
 class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:ArrayList<SongModel>?,
                           private val callback: MusicLibraryAdapterCallback?,
-                          private var selectedSongIndex:Int = 0) : RecyclerView.Adapter<MusicLibraryAdapter.MyViewHolder>() {
+                          var selectedSongIndex:Int = 0) : RecyclerView.Adapter<MusicLibraryAdapter.MyViewHolder>() {
 
     fun updateData(mLocalSongsList: ArrayList<SongModel>?){
         this.mLocalSongsList = mLocalSongsList
