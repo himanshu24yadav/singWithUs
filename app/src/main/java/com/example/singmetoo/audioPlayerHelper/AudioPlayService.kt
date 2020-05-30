@@ -28,6 +28,9 @@ import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsRepository
 import com.example.singmetoo.frescoHelper.FrescoHelper
+import com.example.singmetoo.frescoHelper.FrescoLoadBitmapCallback
+import com.facebook.common.references.CloseableReference
+import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ExoPlayerFactory.newSimpleInstance
 import com.google.android.exoplayer2.audio.AudioAttributes
@@ -66,6 +69,7 @@ class AudioPlayService : Service() {
     private var mediaSessionConnector: MediaSessionConnector? = null
     private var mSongList: ArrayList<SongModel>? = ArrayList()
     var mCurrentlyPlayingSongId: Long? = null
+    private var mDefaultBitmap: Bitmap? = null
     private var mPlayerStatusLiveData = MutableLiveData<PlayerStatus>()
     val playerStatusLiveData: LiveData<PlayerStatus>
         get() = mPlayerStatusLiveData
@@ -79,6 +83,8 @@ class AudioPlayService : Service() {
         super.onCreate()
 
         initialiseExoPlayer()
+
+        setDefaultBitmap()
 
         setMusicNotification()
 
@@ -145,6 +151,18 @@ class AudioPlayService : Service() {
 
         // Monitor ExoPlayer events.
         mExoPlayer.addListener(PlayerEventListener())
+    }
+
+    private fun setDefaultBitmap() {
+        FrescoHelper.getBitmapFromImagePath(frescoLoadBitmapCallback = object : FrescoLoadBitmapCallback {
+            override fun onBitmapLoadSuccess(bitmap: Bitmap?) {
+                mDefaultBitmap = bitmap
+            }
+
+            override fun onBitmapLoadFailure(dataSource: com.facebook.datasource.DataSource<CloseableReference<CloseableImage?>>?) {
+                mDefaultBitmap = null
+            }
+        })
     }
 
     private fun setMusicNotification() {
@@ -262,24 +280,24 @@ class AudioPlayService : Service() {
     }
 
     @MainThread
-    private fun getBitmapForSong(player: Player, @DrawableRes drawableId: Int = R.drawable.bg_default_playing_song): Bitmap? {
+    private fun getBitmapForSong(player: Player): Bitmap? {
+        var bitmapToLoad: Bitmap? = mDefaultBitmap
         val albumId : Long? = if(mSongList!!.size > 0) {
             mSongList!![player.currentWindowIndex].songAlbumId
         } else {
             null
         }
-        var bitmap: Bitmap? = FrescoHelper.getBitmapFromImagePath(AppUtil.getImageUriFromAlbum(albumId).toString())
-        if(bitmap == null) {
-            bitmap = ContextCompat.getDrawable(applicationContext, drawableId)?.let {
-                val drawable = DrawableCompat.wrap(it).mutate()
-                val bitmapFromDrawable = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
-                val canvas = Canvas(bitmapFromDrawable)
-                drawable.setBounds(0, 0, canvas.width, canvas.height)
-                drawable.draw(canvas)
-                bitmapFromDrawable
+
+        FrescoHelper.getBitmapFromImagePath(AppUtil.getImageUriFromAlbum(albumId).toString(), frescoLoadBitmapCallback = object : FrescoLoadBitmapCallback{
+            override fun onBitmapLoadSuccess(bitmap: Bitmap?) {
+                bitmapToLoad = bitmap
             }
-        }
-        return bitmap
+            override fun onBitmapLoadFailure(dataSource: com.facebook.datasource.DataSource<CloseableReference<CloseableImage?>>?) {
+                bitmapToLoad = mDefaultBitmap
+            }
+        })
+
+        return bitmapToLoad
     }
 
     private inner class PlayerEventListener : Player.EventListener {

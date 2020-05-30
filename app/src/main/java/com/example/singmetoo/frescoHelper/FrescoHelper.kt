@@ -14,6 +14,7 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder
 import com.facebook.drawee.generic.RoundingParams
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.ResizeOptions
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.facebook.imagepipeline.request.ImageRequest
@@ -23,8 +24,8 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 class FrescoHelper {
     companion object {
 
-        fun getDraweeController(imageUri: String?,simpleDraweeView: SimpleDraweeView?) : DraweeController? {
-            val request: ImageRequest? = ImageRequest.fromUri(imageUri)
+        fun getDraweeController(imageUri: String?,simpleDraweeView: SimpleDraweeView?,resizeOptions: ResizeOptions? = ResizeOptions(150,150)) : DraweeController? {
+            val request: ImageRequest? = ImageRequestBuilder.newBuilderWithSource(Uri.parse(imageUri)).setResizeOptions(resizeOptions).build()
             return request.let {
                 Fresco.newDraweeControllerBuilder()
                 .setImageRequest(it)
@@ -42,32 +43,46 @@ class FrescoHelper {
                 .build()
         }
 
-        fun getBitmapFromImagePath (imagePath:String?) : Bitmap? {
-            var bitmapForImage:Bitmap? = null
+        fun getBitmapFromImagePath (imagePath:String? = null,
+                                    resId: Int? = null,
+                                    resizeOptions: ResizeOptions? = ResizeOptions(250,250),
+                                    frescoLoadBitmapCallback: FrescoLoadBitmapCallback) {
             try {
-                val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(imagePath)).build()
+                val imageRequest = when {
+                    imagePath != null -> {
+                        ImageRequestBuilder.newBuilderWithSource(Uri.parse(imagePath)).setResizeOptions(resizeOptions).build()
+                    }
+                    resId != null -> {
+                        ImageRequestBuilder.newBuilderWithResourceId(resId).setResizeOptions(resizeOptions).build()
+                    }
+                    else -> {
+                        ImageRequestBuilder.newBuilderWithResourceId(R.drawable.bg_default_playing_song).setResizeOptions(resizeOptions).build()
+                    }
+                }
                 val imagePipeline = Fresco.getImagePipeline()
                 val dataSource = imagePipeline.fetchDecodedImage(imageRequest, this)
                 dataSource.subscribe(object : BaseBitmapDataSubscriber() {
                     override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
+                        frescoLoadBitmapCallback.onBitmapLoadFailure(dataSource)
                         dataSource.close()
                     }
 
                     override fun onNewResultImpl(bitmap: Bitmap?) {
                         try {
                             if (dataSource.isFinished && bitmap != null) {
-                                bitmapForImage = bitmap
+                                frescoLoadBitmapCallback.onBitmapLoadSuccess(bitmap)
                                 dataSource.close()
                             }
                         } catch (e: Exception) {
+                            frescoLoadBitmapCallback.onBitmapLoadFailure(null)
                             e.printStackTrace()
                         }
                     }
                 }, CallerThreadExecutor.getInstance())
             } catch (e: Exception) {
+                frescoLoadBitmapCallback.onBitmapLoadFailure(null)
                 e.printStackTrace()
             }
-            return bitmapForImage
         }
     }
 }
