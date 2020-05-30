@@ -9,7 +9,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/play_iv"
+            android:id="@+id/exo_play"
             style="@style/ExoMediaButton.Rewind"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,25 +22,38 @@
             />
 
         <ImageView
-            android:id="@+id/skip_next_song_iv"
+            android:id="@+id/exo_pause"
+            style="@style/ExoMediaButton.Rewind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/exo_icon_pause"
+            android:padding="@dimen/player_icon_padding"
+            android:tint="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <ImageView
+            android:id="@+id/exo_prev"
             style="@style/ExoMediaButton.Play"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:padding="@dimen/player_icon_padding"
             android:src="@drawable/exo_icon_previous"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/play_iv"
+            app:layout_constraintEnd_toStartOf="@+id/exo_play"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/skip_previous_song_iv"
+            android:id="@+id/exo_next"
             style="@style/ExoMediaButton.Pause"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:padding="@dimen/player_icon_padding"
             android:src="@drawable/exo_icon_next"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/play_iv"
+            app:layout_constraintStart_toEndOf="@+id/exo_play"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

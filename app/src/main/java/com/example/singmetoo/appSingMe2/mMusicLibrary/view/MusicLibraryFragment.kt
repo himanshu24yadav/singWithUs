@@ -69,13 +69,7 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
             setHasFixedSize(true)
             layoutManager = mLinearLayoutManager
             mContext?.let {
-                addItemDecoration(
-                    SpaceItemDecoration(
-                        it.fetchDimen(R.dimen.song_item_spacing_top),
-                        0,
-                        1
-                    )
-                )
+                addItemDecoration(SpaceItemDecoration(it.fetchDimen(R.dimen.song_item_spacing_top), 0, 1))
             }
             itemAnimator = null
         }
@@ -158,8 +152,8 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
             NavigationHelper.openHomeFragment((mContext as? MainActivity)?.supportFragmentManager)
         }
 
-        mLayoutBinding.playingSongControlsLayout.playIv.setOnClickListener {
-            when (mLayoutBinding.playingSongControlsLayout.playIv.tag) {
+        mLayoutBinding.playingSongControlsLayout.exoPlay.setOnClickListener {
+            when (mLayoutBinding.playingSongControlsLayout.exoPlay.tag) {
                 AppConstants.SONG_TAG_PLAY -> {
                     commonBaseInterface?.playAudio(mCurrentPlayingSongModel, false)
                 }
@@ -179,7 +173,7 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
     private fun updateAudioPlayerHeader(songPaused: Boolean) {
         mLayoutBinding.toolbarTitle.text = mCurrentPlayingSongModel?.songTitle
         mLayoutBinding.toolbarSubtitle.text = mCurrentPlayingSongModel?.songArtist
-        mLayoutBinding.playingSongControlsLayout.playIv.togglePlayIcon(songPaused)
+        mLayoutBinding.playingSongControlsLayout.exoPlay.togglePlayIcon(songPaused)
         mLayoutBinding.defaultPlayingSongIv.setAlbumImage(
             AppUtil.getImageUriFromAlbum(
                 mCurrentPlayingSongModel?.songAlbumId

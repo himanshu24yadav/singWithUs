@@ -60,6 +60,8 @@ class AudioPlayService : Service() {
                 putExtra(AppConstants.ARG_SONG_ID, it.songId)
             }
         }
+
+        var isAudioPlayServiceRunning: Boolean = false
     }
 
 
@@ -93,11 +95,13 @@ class AudioPlayService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         handleIntent(intent, FROM_ON_START_COMMAND)
+        isAudioPlayServiceRunning = true
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onDestroy() {
         releaseExoPlayer()
+        isAudioPlayServiceRunning = false
         super.onDestroy()
     }
 

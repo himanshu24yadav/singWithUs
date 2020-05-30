@@ -102,7 +102,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun initListeners() {
         mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setOnClickListener {
-            startAudioService()
+            startPlayingSong()
         }
     }
 
@@ -263,13 +263,19 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         }
     }
 
-    private fun startAudioService() {
+    private fun startPlayingSong() {
         if(mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag == AppConstants.SONG_TAG_PLAY) {
-            if(AppUtil.toResumePlayingSong(mPlayingSongLiveData?.value?.songId,mAudioPlayService?.mCurrentlyPlayingSongId,mBottomAudioPlayerBinding.exoPlayerView.player)){
-                mAudioPlayService?.resume()
-            } else {
-                AudioPlayService.newIntent(this, mPlayingSongLiveData?.value).also { intent ->
-                    startService(intent)
+            when {
+                AppUtil.toResumePlayingSong(mPlayingSongLiveData?.value?.songId,mAudioPlayService?.mCurrentlyPlayingSongId,mBottomAudioPlayerBinding.exoPlayerView.player) -> {
+                    mAudioPlayService?.resume()
+                }
+                AudioPlayService.isAudioPlayServiceRunning -> {
+                    mAudioPlayService?.play(mPlayingSongLiveData?.value?.songId)
+                }
+                else -> {
+                    AudioPlayService.newIntent(this, mPlayingSongLiveData?.value).also { intent ->
+                        startService(intent)
+                    }
                 }
             }
         } else {
@@ -321,7 +327,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         songModel?.let {
             updateAudioPlayerDetails(it, true)
             mPlayingSongLiveData?.value = it
-            startAudioService()
+            startPlayingSong()
         }
     }
 
