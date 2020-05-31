@@ -8,7 +8,6 @@ import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
 
 class AppUtil {
 
@@ -18,9 +17,11 @@ class AppUtil {
         }
 
         fun getFirstName(name:String?) : String?{
-           var firstName: String? = ""
-           firstName = name?.let { name.substring(0,name.lastIndexOf(' ')) }
-           return firstName
+           val index = name?.lastIndexOf(' ') ?: -1
+            return if(index != -1)
+                name?.let { name.substring(0,index) }
+            else
+                name
         }
 
         fun checkIsNotNull(str:String?):Boolean {

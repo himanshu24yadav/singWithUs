@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.singmetoo.R
@@ -18,7 +17,6 @@ import com.example.singmetoo.appSingMe2.mMusicLibrary.adapter.MusicLibraryAdapte
 import com.example.singmetoo.appSingMe2.mMusicLibrary.interfaces.MusicLibraryAdapterCallback
 import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
-import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsViewModel
 import com.example.singmetoo.audioPlayerHelper.PlayerStatus
 import com.example.singmetoo.databinding.LayoutMusicLibraryFragmentBinding
 
