@@ -12,6 +12,7 @@ import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.frescoHelper.FrescoHelper
 import com.facebook.drawee.view.SimpleDraweeView
+import com.facebook.imagepipeline.common.ResizeOptions
 import com.google.android.exoplayer2.Player
 
 fun Context.fetchString(stringId:Int) : String {
@@ -88,6 +89,13 @@ fun ImageView.togglePlayIcon(songPaused:Boolean) {
 fun SimpleDraweeView.setAlbumImageFromFresco(imagePath: String? = null, context:Context?){
     imagePath?.let {
         controller = FrescoHelper.getDraweeController(imagePath,this)
-        hierarchy = context?.let { ctx -> FrescoHelper.getGenericHierarchyBuilderForSongItem(ctx) }
+        hierarchy = context?.let { ctx -> FrescoHelper.getGenericHierarchyBuilderForSongItemRounded(ctx) }
+    }
+}
+
+fun SimpleDraweeView.setAlbumImageFromFrescoResized(imagePath: String? = null, context:Context?,resizeOptions: ResizeOptions? = ResizeOptions(150,150)){
+    imagePath?.let {
+        controller = FrescoHelper.getResizedDraweeController(imagePath,this,resizeOptions)
+        hierarchy = context?.let { ctx -> FrescoHelper.getGenericHierarchyBuilderForSongItemRounded(ctx) }
     }
 }

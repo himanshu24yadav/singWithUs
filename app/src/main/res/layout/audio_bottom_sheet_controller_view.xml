@@ -3,84 +3,215 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/player_height"
-        android:layout_gravity="bottom"
-        android:background="@color/bg_gradient_end_color"
-        android:layoutDirection="ltr"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/player_padding"
-        android:paddingTop="2dp"
-        android:paddingEnd="@dimen/player_padding"
-        android:paddingBottom="2dp">
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_home_background">
 
-        <LinearLayout
-            android:id="@+id/player_seekbar"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/audio_player_preview_cl"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:layout_height="@dimen/audio_player_preview_height"
+            android:background="@color/bg_audio_player_preview"
+            android:padding="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/audio_player_preview_iv"
+                android:layout_width="36dp"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                android:layout_marginStart="8dp"
+                android:src="@drawable/bg_default_playing_song"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/audio_player_preview_title_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                style="@style/toolbar_title_text_now_playing"
+                android:gravity="center"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                app:layout_constraintBottom_toTopOf="@+id/audio_player_preview_artist_tv"
+                app:layout_constraintEnd_toStartOf="@+id/audio_player_preview_play_iv"
+                app:layout_constraintStart_toEndOf="@+id/audio_player_preview_iv"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/audio_player_preview_artist_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                style="@style/toolbar_subtitle_text_now_playing"
+                android:gravity="center"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/audio_player_preview_play_iv"
+                app:layout_constraintStart_toEndOf="@+id/audio_player_preview_iv"
+                app:layout_constraintTop_toBottomOf="@+id/audio_player_preview_title_tv" />
+
+            <ImageView
+                android:id="@+id/audio_player_preview_play_iv"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/exo_icon_play" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/now_playing_header_cl"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/audio_player_preview_height"
+            android:background="@android:color/transparent"
+            android:paddingStart="16dp"
+            android:layout_marginTop="4dp"
+            android:paddingEnd="16dp"
+            android:alpha="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@id/exo_position"
+                android:id="@+id/now_playing_song_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/now_playing_header_playlist_iv"
+                app:layout_constraintEnd_toStartOf="@+id/now_playing_header_menu_iv"
+                app:layout_constraintBottom_toTopOf="@+id/now_playing_song_subtitle"
+                style="@style/toolbar_title_text_now_playing"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/now_playing_song_subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toEndOf="@+id/now_playing_header_playlist_iv"
+                app:layout_constraintEnd_toStartOf="@+id/now_playing_header_menu_iv"
+                app:layout_constraintTop_toBottomOf="@+id/now_playing_song_title"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                style="@style/toolbar_subtitle_text_now_playing"
+                android:textColor="@color/song_item_artist_text_color"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/now_playing_header_playlist_iv"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_menu_playlist"
+                android:tint="@color/white"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/now_playing_header_menu_iv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/white"
-                tools:text="12:00" />
+                android:src="@drawable/ic_three_dot"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/header_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="audio_player_preview_cl,now_playing_header_cl" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/now_playing_body_cl"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/header_barrier"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_view">
+
+            <ImageView
+                android:id="@+id/now_playing_song_bg_iv"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:layout_marginTop="24dp"
+                android:alpha="0.2"
+                android:src="@drawable/bg_default_playing_song"
+                app:layout_constraintHeight_percent="0.6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/now_playing_song_iv"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginTop="24dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="24dp"
+                android:src="@drawable/bg_default_playing_song"
+                android:scaleType="centerCrop"
+                android:elevation="10dp"
+                app:layout_constraintHeight_percent="0.6"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <RelativeLayout
+                android:id="@+id/player_controls_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/now_playing_song_iv"
+                app:layout_constraintBottom_toTopOf="@+id/exo_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <include layout="@layout/layout_song_controls" />
+
+            </RelativeLayout>
 
             <com.google.android.exoplayer2.ui.DefaultTimeBar
                 android:id="@id/exo_progress"
                 android:layout_width="0dp"
-                android:layout_height="26dp"
-                android:layout_weight="1"
-                app:buffered_color="@color/base_app_icon_color"
-                app:played_color="@color/black"
-                app:unplayed_color="@color/color_unplayed" />
-
-            <TextView
-                android:id="@id/exo_duration"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:includeFontPadding="false"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
-                android:textColor="@color/white"
-                tools:text="24:00" />
+                android:layout_weight="1"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                app:buffered_color="@color/color_unplayed"
+                app:played_color="@color/colorAccent"
+                app:unplayed_color="@color/color_unplayed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/player_controls_layout" />
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/player_title_tv"
+        <View
+            android:id="@+id/bottom_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="@string/loading_dots"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/player_controls_layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_seekbar" />
-
-        <RelativeLayout
-            android:id="@+id/player_controls_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/player_title_tv">
-
-            <include layout="@layout/layout_song_controls" />
-
-        </RelativeLayout>
+            android:layout_height="0dp"
+            app:layout_constraintHeight_percent="0.05"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

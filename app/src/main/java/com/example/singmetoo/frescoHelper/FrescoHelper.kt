@@ -24,8 +24,8 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 class FrescoHelper {
     companion object {
 
-        fun getDraweeController(imageUri: String?,simpleDraweeView: SimpleDraweeView?,resizeOptions: ResizeOptions? = ResizeOptions(150,150)) : DraweeController? {
-            val request: ImageRequest? = ImageRequestBuilder.newBuilderWithSource(Uri.parse(imageUri)).setResizeOptions(resizeOptions).build()
+        fun getDraweeController(imageUri: String?,simpleDraweeView: SimpleDraweeView?) : DraweeController? {
+            val request: ImageRequest? = ImageRequestBuilder.newBuilderWithSource(Uri.parse(imageUri)).build()
             return request.let {
                 Fresco.newDraweeControllerBuilder()
                 .setImageRequest(it)
@@ -33,13 +33,30 @@ class FrescoHelper {
             }
         }
 
-        fun getGenericHierarchyBuilderForSongItem(context: Context): GenericDraweeHierarchy? {
+        fun getResizedDraweeController(imageUri: String?,simpleDraweeView: SimpleDraweeView?,resizeOptions: ResizeOptions?) : DraweeController? {
+            val request: ImageRequest? = ImageRequestBuilder.newBuilderWithSource(Uri.parse(imageUri)).setResizeOptions(resizeOptions).build()
+            return request.let {
+                Fresco.newDraweeControllerBuilder()
+                    .setImageRequest(it)
+                    .setOldController(simpleDraweeView?.controller).build()
+            }
+        }
+
+        fun getGenericHierarchyBuilderForSongItemRounded(context: Context,actualScaleType:ScalingUtils.ScaleType = ScalingUtils.ScaleType.CENTER_CROP): GenericDraweeHierarchy? {
             val roundingParams:RoundingParams? = RoundingParams.asCircle().setCornersRadius(2f)
+            return GenericDraweeHierarchyBuilder(context.resources)
+                .setPlaceholderImage(R.drawable.bg_default_playing_song, ScalingUtils.ScaleType.CENTER_CROP)
+                .setActualImageScaleType(actualScaleType)
+                .setFailureImage(R.drawable.bg_default_playing_song)
+                .setRoundingParams(roundingParams)
+                .build()
+        }
+
+        fun getGenericHierarchyBuilderForSongItem(context: Context): GenericDraweeHierarchy? {
             return GenericDraweeHierarchyBuilder(context.resources)
                 .setPlaceholderImage(R.drawable.bg_default_playing_song, ScalingUtils.ScaleType.CENTER_CROP)
                 .setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP)
                 .setFailureImage(R.drawable.bg_default_playing_song)
-                .setRoundingParams(roundingParams)
                 .build()
         }
 

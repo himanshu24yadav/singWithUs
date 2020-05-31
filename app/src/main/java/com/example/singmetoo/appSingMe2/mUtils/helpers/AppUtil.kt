@@ -84,7 +84,7 @@ class AppUtil {
                 }
             }
 
-            return playingSongModel
+            return playingSongModel ?: songListFromDevice?.get(0)
         }
 
         fun getImageUriFromAlbum(albumId:Long?) : Uri? {

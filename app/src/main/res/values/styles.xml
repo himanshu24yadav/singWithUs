@@ -39,4 +39,15 @@
         <item name="android:layout_marginTop">4dp</item>
     </style>
 
+    <style name="toolbar_title_text_now_playing" parent="AppTextAppearance">
+        <item name="android:textSize"> @dimen/song_item_title_text_size </item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="toolbar_subtitle_text_now_playing" parent="AppTextAppearance">
+        <item name="android:textSize"> @dimen/song_item_artist_text_size </item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
 </resources>

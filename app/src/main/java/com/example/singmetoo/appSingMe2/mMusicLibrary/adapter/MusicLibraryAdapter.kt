@@ -10,7 +10,7 @@ import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mMusicLibrary.interfaces.MusicLibraryAdapterCallback
 import com.example.singmetoo.appSingMe2.mUtils.helpers.AppUtil
 import com.example.singmetoo.appSingMe2.mUtils.helpers.fetchColor
-import com.example.singmetoo.appSingMe2.mUtils.helpers.setAlbumImageFromFresco
+import com.example.singmetoo.appSingMe2.mUtils.helpers.setAlbumImageFromFrescoResized
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.databinding.LayoutSongItemBinding
 
@@ -31,7 +31,7 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
 
             holder.itemBinding.songTitleTv.isSelected = false
             holder.itemBinding.songArtistTv.isSelected = false
-            holder.itemBinding.songIv.setAlbumImageFromFresco(AppUtil.getImageUriFromAlbum(list[position].songAlbumId).toString(),mContext)
+            holder.itemBinding.songIv.setAlbumImageFromFrescoResized(AppUtil.getImageUriFromAlbum(list[position].songAlbumId).toString(),mContext)
 
             //set view if currently playing song
             if(selectedSongIndex == position) {

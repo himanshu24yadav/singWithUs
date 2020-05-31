@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
+import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.LiveData
@@ -35,6 +36,7 @@ import com.example.singmetoo.permissionHelper.PermissionModel
 import com.example.singmetoo.permissionHelper.PermissionsManager
 import com.example.singmetoo.permissionHelper.PermissionsResultInterface
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import java.time.ZoneOffset
 
 const val TAG = "MAIN_ACTIVITY_TAG"
 
@@ -42,6 +44,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private lateinit var mLayoutBinding: ActivityMainBinding
     private lateinit var mBottomAudioPlayerBinding: BottomAudioPlayerBinding
+    private var mNowPlayingView : MainActivityViewHolder? = null
     private var actionBarDrawerToggle:ActionBarDrawerToggle? = null
     private var drawerManager: DrawerManager? = null
     private var mBottomSheetAudioPlayerBehaviour: BottomSheetBehavior<View>? = null
@@ -57,8 +60,19 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         Log.e(TAG,"onCreate")
         mLayoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         mBottomAudioPlayerBinding = mLayoutBinding.appBarMain.includeAudioPlayerLayout
+        mNowPlayingView = MainActivityViewHolder(mBottomAudioPlayerBinding.exoPlayerView.children.elementAt(1))
 
         init()
+    }
+
+    private fun init() {
+        initObj()
+        initNavBar()
+        initListeners()
+        initSetUpAudioPlayerBottomSheet()
+        initFetchSongsFromDevice()
+        initObserver()
+        initOpenHomeFragment()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -80,18 +94,8 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         mSongViewModel?.updateCurrentlyPlayingSongFromDevice(mPlayingSongLiveData?.value?.songId)
     }
 
-    private fun init() {
-        initObj()
-        initNavBar()
-        initListeners()
-        initSetUpAudioPlayerBottomSheet()
-        initFetchSongsFromDevice()
-        initObserver()
-        initOpenHomeFragment()
-    }
-
     private fun initListeners() {
-        mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.setOnClickListener {
+        mNowPlayingView?.audioPlayerPreviewPlayIv?.setOnClickListener {
             startPlayingSong()
         }
     }
@@ -114,13 +118,16 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         mBottomSheetAudioPlayerBehaviour?.peekHeight = this.fetchDimen(R.dimen.audio_player_preview_height)
         mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
         mBottomSheetAudioPlayerBehaviour?.isHideable = false
+        mBottomAudioPlayerBinding.exoPlayerView.showController()
         addBottomSheetCallbacks()
         hideBottomAudioPlayer()
     }
 
     private fun addBottomSheetCallbacks() {
         mBottomSheetAudioPlayerBehaviour?.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                animateBottomSheet(slideOffset)
+            }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when(newState) {
@@ -140,6 +147,26 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             }
 
         })
+    }
+
+    private fun animateBottomSheet(slideOffset:Float) {
+        if(mBottomSheetAudioPlayerBehaviour == null) return
+
+        when(slideOffset){
+            0f -> {
+                mNowPlayingView?.audioPlayerPreviewCl?.isClickable = true
+                mNowPlayingView?.nowPlayingHeaderCl?.isClickable = false
+            }
+            1f -> {
+                mNowPlayingView?.audioPlayerPreviewCl?.isClickable = false
+                mNowPlayingView?.nowPlayingHeaderCl?.isClickable = true
+            }
+        }
+
+        mNowPlayingView?.nowPlayingHeaderCl?.alpha = slideOffset
+        mNowPlayingView?.nowPlayingHeaderCl?.alpha = slideOffset
+        mNowPlayingView?.nowPlayingBodyCl?.alpha = slideOffset
+        mNowPlayingView?.audioPlayerPreviewCl?.alpha = 1 - slideOffset
     }
 
     private fun initObj() {
@@ -186,12 +213,18 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     private fun updateAudioPlayerDetails(songToPlay: SongModel?, songPaused: Boolean) {
         songToPlay?.let {
-            mBottomAudioPlayerBinding.audioPlayerPreviewTitleTv.text = it.songTitle ?: AppConstants.DEFAULT_TITLE
-            mBottomAudioPlayerBinding.audioPlayerPreviewArtistTv.text = it.songArtist ?: AppConstants.DEFAULT_ARTIST
-            mBottomAudioPlayerBinding.audioPlayerPreviewTitleTv.isSelected = true
-            mBottomAudioPlayerBinding.audioPlayerPreviewArtistTv.isSelected = true
-            mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.togglePlayIcon(songPaused)
-            mBottomAudioPlayerBinding.audioPlayerPreviewIv.setAlbumImage(AppUtil.getImageUriFromAlbum(it.songAlbumId))
+            mNowPlayingView?.audioPlayerPreviewTitleTv?.text = it.songTitle ?: AppConstants.DEFAULT_TITLE
+            mNowPlayingView?.audioPlayerPreviewArtistTv?.text = it.songArtist ?: AppConstants.DEFAULT_ARTIST
+            mNowPlayingView?.nowPlayingSongTitle?.text = it.songTitle ?: AppConstants.DEFAULT_TITLE
+            mNowPlayingView?.nowPlayingSongSubtitle?.text = it.songArtist ?: AppConstants.DEFAULT_ARTIST
+            mNowPlayingView?.audioPlayerPreviewTitleTv?.isSelected = true
+            mNowPlayingView?.audioPlayerPreviewArtistTv?.isSelected = true
+            mNowPlayingView?.nowPlayingSongTitle?.isSelected = true
+            mNowPlayingView?.nowPlayingSongSubtitle?.isSelected = true
+            mNowPlayingView?.audioPlayerPreviewPlayIv?.togglePlayIcon(songPaused)
+            mNowPlayingView?.audioPlayerPreviewIv?.setAlbumImage(AppUtil.getImageUriFromAlbum(it.songAlbumId))
+            mNowPlayingView?.nowPlayingSongIv?.setAlbumImage(AppUtil.getImageUriFromAlbum(it.songAlbumId))
+            mNowPlayingView?.nowPlayingSongBgIv?.setAlbumImage(AppUtil.getImageUriFromAlbum(it.songAlbumId))
         }
     }
 
@@ -254,7 +287,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     }
 
     private fun startPlayingSong() {
-        if(mBottomAudioPlayerBinding.audioPlayerPreviewPlayIv.tag == AppConstants.SONG_TAG_PLAY) {
+        if(mNowPlayingView?.audioPlayerPreviewPlayIv?.tag == AppConstants.SONG_TAG_PLAY) {
             when {
                 AppUtil.toResumePlayingSong(mPlayingSongLiveData?.value?.songId,mAudioPlayService?.mCurrentlyPlayingSongId,mBottomAudioPlayerBinding.exoPlayerView.player) -> {
                     mAudioPlayService?.resume()
@@ -296,7 +329,11 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
         when (val baseFragment: BaseFragment? = supportFragmentManager.findFragmentById(R.id.main_activity_container) as? BaseFragment) {
             is HomeFragment -> {
-                (baseFragment as? HomeFragment)?.onBackPressed()
+                if(mBottomSheetAudioPlayerBehaviour?.state == BottomSheetBehavior.STATE_EXPANDED) {
+                    mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
+                } else {
+                    (baseFragment as? HomeFragment)?.onBackPressed()
+                }
             }
             else -> {
                 super.onBackPressed()
@@ -336,14 +373,12 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isSongPlaying())
             mBottomAudioPlayerBinding.audioPlayerMainCl.visibility = View.VISIBLE
             mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
-            mBottomAudioPlayerBinding.exoPlayerView.showController()
         }
     }
 
     override fun hideBottomAudioPlayer() {
         mBottomAudioPlayerBinding.audioPlayerMainCl.visibility = View.GONE
         mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
-        mBottomAudioPlayerBinding.exoPlayerView.hideController()
     }
 
     override fun closeDrawer() {
