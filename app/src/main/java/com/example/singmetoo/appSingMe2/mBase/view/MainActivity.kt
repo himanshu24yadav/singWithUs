@@ -98,6 +98,10 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         mNowPlayingView?.audioPlayerPreviewPlayIv?.setOnClickListener {
             startPlayingSong()
         }
+
+        mNowPlayingView?.nowPlayingHeaderPlaylistIv?.setOnClickListener {
+            NavigationHelper.openYourMusicFragment(supportFragmentManager)
+        }
     }
 
     private fun initObserver() {
