@@ -9,11 +9,12 @@
         android:visibility="visible"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-        <com.google.android.exoplayer2.ui.PlayerView
+        <com.google.android.exoplayer2.ui.PlaybackControlView
             android:id="@+id/exo_player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:auto_show="true"
+            app:shutter_background_color="@android:color/transparent"
             app:controller_layout_id="@layout/audio_bottom_sheet_controller_view"
             app:hide_on_touch="false"
             app:layout_constraintEnd_toEndOf="parent"

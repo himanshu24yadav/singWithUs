@@ -23,10 +23,10 @@ import com.example.singmetoo.appSingMe2.mBase.interfaces.NavigationDrawerInterfa
 import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
-import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsViewModel
 import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
 import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
+import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsViewModel
 import com.example.singmetoo.audioPlayerHelper.AudioPlayService
 import com.example.singmetoo.audioPlayerHelper.PlayerStatus
 import com.example.singmetoo.databinding.ActivityMainBinding
@@ -35,8 +35,8 @@ import com.example.singmetoo.databinding.NavHeaderMainBinding
 import com.example.singmetoo.permissionHelper.PermissionModel
 import com.example.singmetoo.permissionHelper.PermissionsManager
 import com.example.singmetoo.permissionHelper.PermissionsResultInterface
+import com.google.android.exoplayer2.Player
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import java.time.ZoneOffset
 
 const val TAG = "MAIN_ACTIVITY_TAG"
 
@@ -60,7 +60,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         Log.e(TAG,"onCreate")
         mLayoutBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         mBottomAudioPlayerBinding = mLayoutBinding.appBarMain.includeAudioPlayerLayout
-        mNowPlayingView = MainActivityViewHolder(mBottomAudioPlayerBinding.exoPlayerView.children.elementAt(1))
+        mNowPlayingView = MainActivityViewHolder(mBottomAudioPlayerBinding.exoPlayerView.children.elementAt(0))
 
         init()
     }
@@ -122,7 +122,6 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         mBottomSheetAudioPlayerBehaviour?.peekHeight = this.fetchDimen(R.dimen.audio_player_preview_height)
         mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
         mBottomSheetAudioPlayerBehaviour?.isHideable = false
-        mBottomAudioPlayerBinding.exoPlayerView.showController()
         addBottomSheetCallbacks()
         hideBottomAudioPlayer()
     }
@@ -354,6 +353,9 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     override val songListFromDeviceLiveData: LiveData<ArrayList<SongModel>>?
         get() = mSongListFromDeviceLiveData
 
+    override val exoAudioPlayerView: Player?
+        get() = mBottomAudioPlayerBinding.exoPlayerView.player
+
     override fun playAudio(songModel: SongModel?,toShowBottomAudioPlayer: Boolean) {
         songModel?.let {
             updateAudioPlayerDetails(it, true)
@@ -374,7 +376,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun showBottomAudioPlayer(songToPlay:SongModel?) {
         songToPlay?.let {
-            updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isSongPlaying())
+            updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player?.isSongPlaying()!!)
             mBottomAudioPlayerBinding.audioPlayerMainCl.visibility = View.VISIBLE
             mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
         }
@@ -407,7 +409,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun updatePlayingSong(playingSong: SongModel?) {
         playingSong?.let {
-            updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player.isSongPlaying())
+            updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player?.isSongPlaying()!!)
             mPlayingSongLiveData?.value = it
         }
     }

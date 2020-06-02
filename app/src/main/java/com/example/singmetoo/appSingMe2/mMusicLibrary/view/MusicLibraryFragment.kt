@@ -19,6 +19,7 @@ import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.audioPlayerHelper.PlayerStatus
 import com.example.singmetoo.databinding.LayoutMusicLibraryFragmentBinding
+import com.google.android.exoplayer2.SimpleExoPlayer
 
 
 class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
@@ -35,11 +36,7 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
         this.mContext = context
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? { setHasOptionsMenu(true)
         mLayoutBinding = DataBindingUtil.inflate(layoutInflater, R.layout.layout_music_library_fragment, container, false)
         return mLayoutBinding.root
     }
@@ -71,6 +68,8 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
             }
             itemAnimator = null
         }
+
+        mLayoutBinding.exoPlayerView.player = commonBaseInterface?.exoAudioPlayerView
     }
 
     private fun initObservers() {
@@ -92,21 +91,21 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
     private fun handlePlayerStatusFromService(playerStatus: PlayerStatus?) {
         when (playerStatus) {
             is PlayerStatus.Playing -> {
-                updateAudioPlayerHeader(false)
+                updateAudioPlayerHeader()
                 changeSong(playerStatus.songId)
             }
             is PlayerStatus.Paused -> {
-                updateAudioPlayerHeader(true)
+                updateAudioPlayerHeader()
                 changeSong(playerStatus.songId)
             }
             is PlayerStatus.Cancelled -> {
-                updateAudioPlayerHeader(true)
+                updateAudioPlayerHeader()
             }
             is PlayerStatus.Error -> {
-                updateAudioPlayerHeader(true)
+                updateAudioPlayerHeader()
             }
             is PlayerStatus.Idle -> {
-                updateAudioPlayerHeader(true)
+                updateAudioPlayerHeader()
             }
         }
     }
@@ -114,7 +113,7 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
     private fun updateView() {
         mSongsListFromDevice?.let { list ->
             if (list.size > 0) {
-                updateAudioPlayerHeader(true)
+                updateAudioPlayerHeader()
                 mLayoutBinding.playingSongGroup.visibility = View.VISIBLE
                 mLayoutBinding.songsRv.visibility = View.VISIBLE
                 setMusicLibraryAdapter()
@@ -149,17 +148,6 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
         mLayoutBinding.toolbarHomeIcon.setOnClickListener {
             NavigationHelper.openHomeFragment((mContext as? MainActivity)?.supportFragmentManager)
         }
-
-        mLayoutBinding.playingSongControlsLayout.exoPlay.setOnClickListener {
-            when (mLayoutBinding.playingSongControlsLayout.exoPlay.tag) {
-                AppConstants.SONG_TAG_PLAY -> {
-                    commonBaseInterface?.playAudio(mCurrentPlayingSongModel, false)
-                }
-                AppConstants.SONG_TAG_PAUSE -> {
-                    commonBaseInterface?.pauseAudio()
-                }
-            }
-        }
     }
 
     private fun initToolbar() {
@@ -168,10 +156,9 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
         mLayoutBinding.musicLibFragToolbar.setNavigationOnClickListener(navigationDrawerListener())
     }
 
-    private fun updateAudioPlayerHeader(songPaused: Boolean) {
+    private fun updateAudioPlayerHeader() {
         mLayoutBinding.toolbarTitle.text = mCurrentPlayingSongModel?.songTitle
         mLayoutBinding.toolbarSubtitle.text = mCurrentPlayingSongModel?.songArtist
-        mLayoutBinding.playingSongControlsLayout.exoPlay.togglePlayIcon(songPaused)
         mLayoutBinding.defaultPlayingSongIv.setAlbumImage(
             AppUtil.getImageUriFromAlbum(
                 mCurrentPlayingSongModel?.songAlbumId
@@ -197,7 +184,7 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
 
     override fun toggleAudioPlayer(newSelectedSongForPlaying: SongModel?, toPauseSong: Boolean) {
         mCurrentPlayingSongModel = newSelectedSongForPlaying
-        updateAudioPlayerHeader(songPaused = false)
+        updateAudioPlayerHeader()
         mLayoutBinding.toolbarTitle.isSelected = false
         mLayoutBinding.toolbarSubtitle.isSelected = false
         if (toPauseSong) {
