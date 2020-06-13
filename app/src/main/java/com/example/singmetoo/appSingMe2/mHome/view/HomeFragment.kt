@@ -15,7 +15,6 @@ import com.example.singmetoo.appSingMe2.mHome.interfaces.HomeItemsInterface
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
 import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.databinding.LayoutHomeFragmentBinding
-import kotlinx.android.synthetic.main.layout_home_fragment.*
 
 class HomeFragment : BaseFragment(),HomeItemsInterface {
 

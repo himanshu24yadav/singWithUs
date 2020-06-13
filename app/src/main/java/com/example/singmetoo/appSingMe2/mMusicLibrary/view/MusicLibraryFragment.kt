@@ -17,9 +17,9 @@ import com.example.singmetoo.appSingMe2.mMusicLibrary.adapter.MusicLibraryAdapte
 import com.example.singmetoo.appSingMe2.mMusicLibrary.interfaces.MusicLibraryAdapterCallback
 import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
+import com.example.singmetoo.audioPlayerHelper.AudioPlayService
 import com.example.singmetoo.audioPlayerHelper.PlayerStatus
 import com.example.singmetoo.databinding.LayoutMusicLibraryFragmentBinding
-import com.google.android.exoplayer2.SimpleExoPlayer
 
 
 class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
@@ -148,6 +148,10 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
         mLayoutBinding.toolbarHomeIcon.setOnClickListener {
             NavigationHelper.openHomeFragment((mContext as? MainActivity)?.supportFragmentManager)
         }
+
+        mLayoutBinding.defaultPlayIcon.setOnClickListener {
+            commonBaseInterface?.playAudio(mCurrentPlayingSongModel, false)
+        }
     }
 
     private fun initToolbar() {
@@ -166,6 +170,13 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
         )
         mLayoutBinding.toolbarTitle.isSelected = true
         mLayoutBinding.toolbarSubtitle.isSelected = true
+        if(AudioPlayService.isAudioPlayServiceRunning) {
+            mLayoutBinding.playerControlRl.visibility = View.VISIBLE
+            mLayoutBinding.defaultPlayIcon.visibility = View.GONE
+        } else {
+            mLayoutBinding.playerControlRl.visibility = View.GONE
+            mLayoutBinding.defaultPlayIcon.visibility = View.VISIBLE
+        }
     }
 
     private fun changeSong(songToPlayId:String?) {

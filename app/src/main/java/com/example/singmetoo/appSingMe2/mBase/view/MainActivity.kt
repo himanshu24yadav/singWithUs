@@ -134,17 +134,12 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when(newState) {
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-
-                    }
-                    BottomSheetBehavior.STATE_HIDDEN-> {
-
-                    }
-                    BottomSheetBehavior.STATE_COLLAPSED -> {
-
+                    BottomSheetBehavior.STATE_DRAGGING-> {
+                        if(!AudioPlayService.isAudioPlayServiceRunning){
+                            mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
+                        }
                     }
                     else -> {
-
                     }
                 }
             }

@@ -5,13 +5,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:clickable="true"
         android:background="@drawable/bg_home_background">
 
         <FrameLayout
             android:id="@+id/default_playing_song_fl"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/exo_player_view"
+            app:layout_constraintBottom_toBottomOf="@+id/songs_rv_barrier"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -85,22 +87,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/music_lib_frag_toolbar" />
 
-        <com.google.android.exoplayer2.ui.PlaybackControlView
-            android:id="@+id/exo_player_view"
+        <RelativeLayout
+            android:id="@+id/player_control_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:auto_show="true"
-            app:controller_layout_id="@layout/layout_song_controls"
-            app:hide_on_touch="false"
-            app:player_layout_id="@layout/audio_bottom_sheet_player_view"
-            app:resize_mode="fixed_height"
-            app:show_buffering="always"
-            app:show_timeout="0"
-            app:use_controller="true"
-            android:layout_marginTop="60dp"
-            android:padding="4dp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/song_control_barrier">
+
+            <com.google.android.exoplayer2.ui.PlaybackControlView
+                android:id="@+id/exo_player_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:auto_show="true"
+                app:controller_layout_id="@layout/layout_song_controls"
+                app:hide_on_touch="false"
+                app:player_layout_id="@layout/audio_bottom_sheet_player_view"
+                app:resize_mode="fixed_height"
+                app:show_buffering="always"
+                app:show_timeout="0"
+                app:use_controller="true"
+                android:layout_marginTop="60dp"
+                android:padding="4dp" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/default_play_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_play_circle_48dp"
+            android:tint="@color/white"
+            android:layout_marginTop="60dp"
+            android:visibility="gone"
+            android:padding="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/song_control_barrier" />
 
         <androidx.constraintlayout.widget.Group
@@ -108,7 +131,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="toolbar_subtitle,exo_player_view,default_playing_song_fl" />
+            app:constraint_referenced_ids="toolbar_subtitle,default_playing_song_fl" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/songs_rv"
@@ -118,8 +141,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/songs_rv_barrier"
-            />
+            app:layout_constraintTop_toBottomOf="@id/songs_rv_barrier" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/song_control_barrier"
@@ -134,7 +156,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="music_lib_frag_toolbar,exo_player_view" />
+            app:constraint_referenced_ids="music_lib_frag_toolbar,player_control_rl,default_play_icon" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
