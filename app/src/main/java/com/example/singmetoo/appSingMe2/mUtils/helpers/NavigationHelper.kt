@@ -18,10 +18,6 @@ class NavigationHelper {
             }
         }
 
-        fun openRecentFragment(){
-            AppUtil.showToast(CustomApplicationClass.applicationContext(),"openRecentFragment")
-        }
-
         fun openYourMusicFragment(supportFragmentManager: FragmentManager?) {
             supportFragmentManager?.activeFragment().let {
                 if (it == null || it !is MusicLibraryFragment) {
@@ -30,15 +26,7 @@ class NavigationHelper {
             }
         }
 
-        fun openPlaylistFragment(){
-            AppUtil.showToast(CustomApplicationClass.applicationContext(),"openPlaylistFragment")
-        }
-
-        fun openRadioFragment(){
-            AppUtil.showToast(CustomApplicationClass.applicationContext(),"openRadioFragment")
-        }
-
-        fun openAboutUsFragment(){
+        fun openAboutUsFragment(supportFragmentManager: FragmentManager?) {
             AppUtil.showToast(CustomApplicationClass.applicationContext(),"openAboutUsFragment")
         }
     }

@@ -411,7 +411,6 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun onProfileClick(view:View) {
         mLayoutBinding.drawerLayout.closeDrawer(GravityCompat.START)
-        AppUtil.showToast(this,"onProfileClick")
     }
 
     override fun onPermissionResult(isAllGranted: Boolean, permissionResults: ArrayList<PermissionModel>?, requestCode: Int) {

@@ -2,15 +2,17 @@ package com.example.singmetoo.appSingMe2.mHome.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mHome.interfaces.HomeItemsInterface
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
+import com.example.singmetoo.appSingMe2.mUtils.helpers.fetchString
 import com.example.singmetoo.databinding.LayoutHomeItemBinding
 
-class HomeAdapter(private var context:Context?, private var contentList:ArrayList<HomeContentModel>?,private val homeItemsInterface: HomeItemsInterface?) : RecyclerView.Adapter<HomeAdapter.MyViewHolder>() {
+class HomeAdapter(private var context: Context?, private var contentList:ArrayList<HomeContentModel>?, private val homeItemsInterface: HomeItemsInterface?) : RecyclerView.Adapter<HomeAdapter.MyViewHolder>() {
 
     fun updateData(contentList: ArrayList<HomeContentModel>?){
         this.contentList = contentList
@@ -27,6 +29,8 @@ class HomeAdapter(private var context:Context?, private var contentList:ArrayLis
         contentList?.let {
             holder.itemBinding.itemData = it[position]
             holder.itemBinding.listener = homeItemsInterface
+            val aboutUsTitle = context?.fetchString(R.string.home_item_about_us) ?: ""
+            holder.itemBinding.playIcon.visibility = if(aboutUsTitle == it[position].title) View.GONE else View.VISIBLE
         }
     }
 

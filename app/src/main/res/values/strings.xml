@@ -16,10 +16,8 @@
     <string name="menu_item_other">Other</string>
     <string name="menu_item_login">Login</string>
     <string name="menu_item_logout">Logout</string>
-    <string name="home_item_recents_title">Recents</string>
     <string name="home_item_music_title">Music</string>
-    <string name="home_item_playlists_title">Playlists</string>
-    <string name="home_item_radio_title">Radio</string>
+    <string name="home_item_about_us">About Us</string>
     <string name="now_playing">Now Playing</string>
 
     //music service

@@ -32,13 +32,6 @@ class AppUtil {
             val homeItems: ArrayList<HomeContentModel>? = ArrayList()
 
             //musicLibrary item
-            val recents = HomeContentModel()
-            recents.title = context?.fetchString(R.string.home_item_recents_title)
-            recents.subtitle = "Pick the best"
-            recents.resId = R.drawable.ic_home_recent_item
-            homeItems?.add(recents)
-
-            //musicLibrary item
             val musicLibrary = HomeContentModel()
             musicLibrary.title = context?.fetchString(R.string.home_item_music_title)
             musicLibrary.subtitle = "Your library"
@@ -47,17 +40,10 @@ class AppUtil {
 
             //playlist item
             val playlist = HomeContentModel()
-            playlist.title = context?.fetchString(R.string.home_item_playlists_title)
-            playlist.subtitle = "Choose your best"
-            playlist.resId = R.drawable.ic_home_playlist_item
+            playlist.title = context?.fetchString(R.string.home_item_about_us)
+            playlist.subtitle = "Who are we"
+            playlist.resId = R.drawable.ic_home_music_item
             homeItems?.add(playlist)
-
-            //radioModel item
-            val radioModel = HomeContentModel()
-            radioModel.title = context?.fetchString(R.string.home_item_radio_title)
-            radioModel.subtitle = "Find your tune"
-            radioModel.resId = R.drawable.ic_home_radio_item
-            homeItems?.add(radioModel)
 
             return homeItems
         }

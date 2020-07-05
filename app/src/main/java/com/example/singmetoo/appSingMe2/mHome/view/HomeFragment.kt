@@ -22,7 +22,7 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
     private var mContext:Context? = null
     private var mLayoutManager: GridLayoutManager? = null
     private var mHomeAdapter: HomeAdapter? = null
-    private val itemSpanCount:Int = 2
+    private val itemSpanCount:Int = 1
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -90,9 +90,7 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
         itemModel?.let {
             when(itemModel.title) {
                 mContext?.fetchString(R.string.home_item_music_title) -> { NavigationHelper.openYourMusicFragment(activityFragmentManager()) }
-                mContext?.fetchString(R.string.home_item_playlists_title) -> { NavigationHelper.openPlaylistFragment() }
-                mContext?.fetchString(R.string.home_item_radio_title) -> { NavigationHelper.openRadioFragment() }
-                mContext?.fetchString(R.string.home_item_recents_title) -> { NavigationHelper.openRecentFragment() }
+                mContext?.fetchString(R.string.home_item_about_us) -> { NavigationHelper.openAboutUsFragment(activityFragmentManager()) }
                 else -> { AppUtil.showToast(mContext,"Else") }
             }
         }

@@ -11,11 +11,6 @@
             android:id="@+id/nav_item_your_music"
             android:icon="@drawable/ic_menu_music"
             android:title="@string/menu_your_music" />
-
-        <item
-            android:id="@+id/nav_item_playlist"
-            android:icon="@drawable/ic_menu_playlist"
-            android:title="@string/menu_playlist" />
     </group>
 
     <group android:id="@+id/other_items">
