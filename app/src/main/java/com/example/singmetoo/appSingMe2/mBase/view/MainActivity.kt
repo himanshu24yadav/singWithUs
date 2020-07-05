@@ -65,6 +65,13 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         init()
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if(intent?.extras?.getBoolean(AppConstants.FROM_MUSIC_NOTIFICATION,false)!!){
+            mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
     private fun init() {
         initObj()
         initNavBar()
@@ -92,6 +99,11 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         Log.e(TAG,"onStop")
         unbindAudioService()
         mSongViewModel?.updateCurrentlyPlayingSongFromDevice(mPlayingSongLiveData?.value?.songId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopAudioService()
     }
 
     private fun initListeners() {

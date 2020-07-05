@@ -21,7 +21,8 @@
 
         <activity
             android:name=".appSingMe2.mBase.view.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTop">
         </activity>
 
         <activity

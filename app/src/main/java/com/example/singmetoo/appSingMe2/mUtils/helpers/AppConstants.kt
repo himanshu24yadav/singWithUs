@@ -12,6 +12,7 @@ class AppConstants {
         const val DEFAULT_FRAGMENT_TAG = "DEFAULT_FRAG"
         const val HOME_FRAGMENT_TAG = "HOME_FRAG"
         const val MUSIC_LIBRARY_FRAGMENT_TAG = "MUSIC_LIBRARY_FRAG"
+        const val FROM_MUSIC_NOTIFICATION = "FROM_MUSIC_NOTIFICATION"
 
         //permissions
         const val PERMISSION_WRITE_STORAGE: String = Manifest.permission.WRITE_EXTERNAL_STORAGE

@@ -189,7 +189,7 @@ class AudioPlayService : Service() {
 
                 @Nullable
                 override fun createCurrentContentIntent(player: Player): PendingIntent? = PendingIntent.getActivity(applicationContext, 0,
-                    Intent(applicationContext, MainActivity::class.java),
+                    Intent(applicationContext, MainActivity::class.java).putExtra(AppConstants.FROM_MUSIC_NOTIFICATION,true),
                     PendingIntent.FLAG_UPDATE_CURRENT)
 
                 @Nullable
