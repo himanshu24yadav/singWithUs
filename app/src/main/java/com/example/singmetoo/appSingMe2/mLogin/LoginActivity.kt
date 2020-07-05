@@ -144,6 +144,6 @@ class LoginActivity : BaseActivity() {
         Handler().postDelayed({
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-        }, 2000)
+        }, 1000)
     }
 }
