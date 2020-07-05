@@ -45,9 +45,8 @@ class FrescoHelper {
         fun getGenericHierarchyBuilderForSongItemRounded(context: Context,actualScaleType:ScalingUtils.ScaleType = ScalingUtils.ScaleType.CENTER_CROP): GenericDraweeHierarchy? {
             val roundingParams:RoundingParams? = RoundingParams.asCircle().setCornersRadius(2f)
             return GenericDraweeHierarchyBuilder(context.resources)
-                .setPlaceholderImage(R.drawable.bg_default_playing_song, ScalingUtils.ScaleType.CENTER_CROP)
                 .setActualImageScaleType(actualScaleType)
-                .setFailureImage(R.drawable.bg_default_playing_song)
+                .setFailureImage(R.drawable.ic_audiotrack_48dp)
                 .setRoundingParams(roundingParams)
                 .build()
         }
