@@ -72,6 +72,14 @@ class MusicLibraryAdapter(var mContext:Context?, private var mLocalSongsList:Arr
         return MyViewHolder(layoutSongItemBinding)
     }
 
-    inner class MyViewHolder(val itemBinding: LayoutSongItemBinding) : RecyclerView.ViewHolder(itemBinding.root)
+    inner class MyViewHolder(val itemBinding: LayoutSongItemBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+
+        init {
+            itemBinding.songDurationTv.setOnClickListener {
+                callback?.showSongInfo(mLocalSongsList?.get(adapterPosition))
+            }
+        }
+
+    }
 
 }

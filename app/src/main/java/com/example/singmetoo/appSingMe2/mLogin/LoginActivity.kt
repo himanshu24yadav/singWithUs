@@ -121,7 +121,7 @@ class LoginActivity : BaseActivity() {
 
     private fun updateUI() {
         if (currentUser != null) {
-            AppUtil.showToast(this, "signed in with ${currentUser!!.email}")
+            //AppUtil.showToast(this, "signed in with ${currentUser!!.email}")
             storeUserInfoDetails()
             moveToMainActivity()
         } else if(SharedPrefHelper.getSharedPref(SharedPrefHelper.SF_KEY_SKIP_LOGIN,false) as Boolean) {

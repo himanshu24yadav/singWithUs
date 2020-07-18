@@ -421,9 +421,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         }
     }
 
-    override fun onProfileClick(view:View) {
-        mLayoutBinding.drawerLayout.closeDrawer(GravityCompat.START)
-    }
+    override fun onProfileClick(view:View) {}
 
     override fun onPermissionResult(isAllGranted: Boolean, permissionResults: ArrayList<PermissionModel>?, requestCode: Int) {
         if(isAllGranted){

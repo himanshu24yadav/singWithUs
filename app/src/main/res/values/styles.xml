@@ -50,4 +50,18 @@
         <item name="android:textStyle">italic</item>
     </style>
 
+    <style name="dialog_text_appearance" parent="AppTextAppearance">
+        <item name="android:textSize"> 12sp </item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+
 </resources>
