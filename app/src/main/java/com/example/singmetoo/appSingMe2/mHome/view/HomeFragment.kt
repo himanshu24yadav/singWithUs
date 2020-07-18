@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
@@ -42,8 +43,17 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
 
     private fun init() {
         initObject()
+        initObserver()
         initToolbar()
         initView()
+    }
+
+    private fun initObserver() {
+        commonBaseInterface?.userInfoLiveData?.observe(this, Observer {
+            mLayoutBinding.userInfo = it
+            mLayoutBinding.profilePhotoUrl = "${it.userName?.get(0)}"
+            mLayoutBinding.hasUserProfilePhoto = AppUtil.checkIsNotNull(it.userProfilePicUrl)
+        })
     }
 
     private fun initObject() {
@@ -51,9 +61,6 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
     }
 
     private fun initView() {
-        mLayoutBinding.userInfo = mUserInfo
-        mLayoutBinding.profilePhotoUrl = "${mUserInfo.userName?.get(0)}"
-        mLayoutBinding.hasUserProfilePhoto = AppUtil.checkIsNotNull(mUserInfo.userProfilePicUrl)
         mLayoutBinding.homeRV.apply {
             setHasFixedSize(true)
             layoutManager = mLayoutManager

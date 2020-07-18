@@ -9,6 +9,7 @@ import android.os.IBinder
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.children
 import androidx.databinding.DataBindingUtil
@@ -24,6 +25,7 @@ import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mBase.util.BaseFragment
 import com.example.singmetoo.appSingMe2.mBase.util.DrawerManager
 import com.example.singmetoo.appSingMe2.mHome.view.HomeFragment
+import com.example.singmetoo.appSingMe2.mLogin.AppUserInfo
 import com.example.singmetoo.appSingMe2.mUtils.helpers.*
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongsViewModel
@@ -45,12 +47,14 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     private lateinit var mLayoutBinding: ActivityMainBinding
     private lateinit var mBottomAudioPlayerBinding: BottomAudioPlayerBinding
     private var mNowPlayingView : MainActivityViewHolder? = null
+    private var headerLayoutBinding: NavHeaderMainBinding? = null
     private var actionBarDrawerToggle:ActionBarDrawerToggle? = null
     private var drawerManager: DrawerManager? = null
     private var mBottomSheetAudioPlayerBehaviour: BottomSheetBehavior<View>? = null
     private var mPlayerStatusLiveData: LiveData<PlayerStatus>? = null
     private var mPlayingSongLiveData: MutableLiveData<SongModel>? = MutableLiveData()
     private var mSongListFromDeviceLiveData: MutableLiveData<ArrayList<SongModel>>? = MutableLiveData()
+    private var mUserInfoLiveData:MutableLiveData<AppUserInfo>? = MutableLiveData()
     private var mSongViewModel : SongsViewModel? = null
     private var mAudioPlayService: AudioPlayService? = null
     private var mSongsListFromDevice: ArrayList<SongModel>? = ArrayList()
@@ -127,6 +131,12 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
                 showBottomAudioPlayer(it)
             }
         })
+
+        userLoggedInLiveData?.observe(this, Observer { success ->
+            if(success) {
+                updateUserInfoUI()
+            }
+        })
     }
 
     private fun initSetUpAudioPlayerBottomSheet() {
@@ -180,8 +190,9 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     }
 
     private fun initObj() {
-        drawerManager = DrawerManager(this, mLayoutBinding.drawerLayout)
+        drawerManager = DrawerManager(this, mLayoutBinding.drawerLayout,this)
         mSongViewModel = ViewModelProviders.of(this).get(SongsViewModel::class.java)
+        headerLayoutBinding = NavHeaderMainBinding.bind(mLayoutBinding.navView.getHeaderView(0))
     }
 
     private fun initNavBar() {
@@ -209,8 +220,6 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     }
 
     private fun setNavHeaderView() {
-        val headerLayoutBinding: NavHeaderMainBinding? = NavHeaderMainBinding.bind(mLayoutBinding.navView.getHeaderView(0))
-
         //set profile name using extension method (setProfileName)
         headerLayoutBinding?.navProfileName?.setProfileName(mUserInfo.userName)
 
@@ -219,6 +228,14 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         headerLayoutBinding?.hasUserProfilePhoto = AppUtil.checkIsNotNull(mUserInfo.userProfilePicUrl)
         headerLayoutBinding?.navBarCallback = this
         headerLayoutBinding?.userInfo = mUserInfo
+        mUserInfoLiveData?.value = mUserInfo
+        if(mUserInfo.isUserLoggedIn) {
+            mLayoutBinding.navView.menu.findItem(R.id.nav_item_logout).title = this.fetchString(R.string.menu_item_logout)
+            mLayoutBinding.navView.menu.findItem(R.id.nav_item_logout).icon = ContextCompat.getDrawable(this, R.drawable.ic_menu_logout)
+        } else {
+            mLayoutBinding.navView.menu.findItem(R.id.nav_item_logout).title = this.fetchString(R.string.menu_item_login)
+            mLayoutBinding.navView.menu.findItem(R.id.nav_item_logout).icon = ContextCompat.getDrawable(this, R.drawable.ic_menu_login)
+        }
     }
 
     private fun updateAudioPlayerDetails(songToPlay: SongModel?, songPaused: Boolean) {
@@ -323,6 +340,35 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
         mAudioPlayService = null
     }
 
+    private fun updateUserInfoUI() {
+        mUserInfo.apply {
+            userName = currentUser?.displayName
+            userEmail = currentUser?.email
+            userId = currentUser?.uid
+            isUserLoggedIn = true
+        }
+        setNavHeaderView()
+        SharedPrefHelper.storeSharedPref(SharedPrefHelper.SF_KEY_SKIP_LOGIN,false)
+        closeDrawer()
+        AppUtil.showToast(this,"Hi ${mUserInfo.userName}")
+    }
+
+    private fun signOutUser() {
+        mUserInfo.apply {
+            userName = "User"
+            userEmail = ""
+            userId = ""
+            isUserLoggedIn = false
+        }
+        setNavHeaderView()
+        firebaseAuth?.signOut()
+        googleSignInClient?.signOut()
+        currentUser = null
+        SharedPrefHelper.storeSharedPref(SharedPrefHelper.SF_KEY_SKIP_LOGIN,true)
+        closeDrawer()
+        AppUtil.showToast(this,"signed out successfully")
+    }
+
 
 
 
@@ -362,6 +408,9 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override val exoAudioPlayerView: Player?
         get() = mBottomAudioPlayerBinding.exoPlayerView.player
+
+    override val userInfoLiveData: LiveData<AppUserInfo>?
+        get() = mUserInfoLiveData
 
     override fun playAudio(songModel: SongModel?,toShowBottomAudioPlayer: Boolean) {
         songModel?.let {
@@ -419,6 +468,15 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player?.isSongPlaying()!!)
             mPlayingSongLiveData?.value = it
         }
+    }
+
+    override fun changeUserSigningInfo() {
+        if(mUserInfo.isUserLoggedIn) {
+            signOutUser()
+        } else {
+            signInUser()
+        }
+
     }
 
     override fun onProfileClick(view:View) {}

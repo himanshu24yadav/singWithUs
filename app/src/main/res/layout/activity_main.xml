@@ -27,7 +27,7 @@
             app:itemIconSize="18dp"
             app:itemIconTint="@color/white"
             app:itemTextAppearance="@style/nav_text_appearance"
-            app:menu="@menu/activity_main_drawer">
+                app:menu="@menu/activity_main_drawer">
 
             <LinearLayout
                 android:id="@+id/nav_bar_bootom_layout"
