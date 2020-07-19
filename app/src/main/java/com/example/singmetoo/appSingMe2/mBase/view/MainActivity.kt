@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import android.view.View
@@ -396,6 +397,9 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
                     else -> {
                         AppUtil.showToast(this,"Press again to exit")
                         mToExit = true
+                        Handler().postDelayed({
+                            mToExit = false
+                        },3000)
                     }
                 }
             }

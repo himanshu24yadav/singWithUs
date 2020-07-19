@@ -19,7 +19,7 @@ class DrawerManager(var mContext: Context?, var drawerLayout: DrawerLayout,val c
 
             R.id.nav_item_your_music -> { NavigationHelper.openYourMusicFragment((mContext as? MainActivity)?.supportFragmentManager) }
 
-            R.id.nav_item_about -> { NavigationHelper.openAboutUsFragment((mContext as? MainActivity)?.supportFragmentManager) }
+            R.id.nav_item_about -> { NavigationHelper.openAboutUsFragment(mContext) }
 
             R.id.nav_item_logout -> { commonBaseInterface?.changeUserSigningInfo() }
 

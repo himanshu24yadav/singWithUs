@@ -19,6 +19,12 @@
     <string name="home_item_music_title">Music</string>
     <string name="home_item_about_us">About Us</string>
     <string name="now_playing">Now Playing</string>
+    <string name="about_us_contact_text">Contact With Us</string>
+    <string name="about_us_developer_name">Himanshu Yadav</string>
+    <string name="about_us_contact_linkedIn">LinkedIn : linkedin.com/in/himanshu-yadav-5419bb120</string>
+    <string name="about_us_contact_email">Email : himanshu24yadav@gmail.com</string>
+    <string name="about_us_text">singWithUs is a music streaming application that offers to listen to songs
+    closest to your heart. It lets you choose from your local storage and play.</string>
 
     //music service
     <string name="playback_channel_name">Now Playing</string>

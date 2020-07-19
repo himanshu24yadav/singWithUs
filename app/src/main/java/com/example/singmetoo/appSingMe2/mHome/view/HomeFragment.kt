@@ -93,7 +93,7 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
         itemModel?.let {
             when(itemModel.title) {
                 mContext?.fetchString(R.string.home_item_music_title) -> { NavigationHelper.openYourMusicFragment(activityFragmentManager()) }
-                mContext?.fetchString(R.string.home_item_about_us) -> { NavigationHelper.openAboutUsFragment(activityFragmentManager()) }
+                mContext?.fetchString(R.string.home_item_about_us) -> { NavigationHelper.openAboutUsFragment(mContext) }
                 else -> { AppUtil.showToast(mContext,"Else") }
             }
         }

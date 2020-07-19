@@ -4,9 +4,9 @@ import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import com.example.singmetoo.R
+import com.example.singmetoo.appSingMe2.mBase.util.BaseActivity
 import com.example.singmetoo.appSingMe2.mHome.pojo.HomeContentModel
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.google.android.exoplayer2.Player
@@ -89,12 +89,11 @@ class AppUtil {
             return (newSongId == audioServiceSongId) && (exoPlayer?.isSongPaused()!!)
         }
 
-        fun openDetailDialog(mContext:Context?,songModel:SongModel? = null) {
-            val dialogFragment = DialogDetailFragment()
+        fun openDetailDialog(mContext:Context?) {
+            val dialogFragment = DialogAboutUsFragment()
             dialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.Theme_AppCompat)
-            dialogFragment.setData(songModel)
 
-            if (!dialogFragment.isAdded && !dialogFragment.isVisible && mContext!=null) dialogFragment.show((mContext as AppCompatActivity).supportFragmentManager, "")
+            if (!dialogFragment.isAdded && !dialogFragment.isVisible && mContext!=null) dialogFragment.show((mContext as BaseActivity).supportFragmentManager, "")
         }
     }
 

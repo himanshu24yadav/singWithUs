@@ -1,5 +1,6 @@
 package com.example.singmetoo.appSingMe2.mUtils.helpers
 
+import android.content.Context
 import androidx.fragment.app.FragmentManager
 import com.example.singmetoo.CustomApplicationClass
 import com.example.singmetoo.R
@@ -26,8 +27,8 @@ class NavigationHelper {
             }
         }
 
-        fun openAboutUsFragment(supportFragmentManager: FragmentManager?) {
-            AppUtil.showToast(CustomApplicationClass.applicationContext(),"openAboutUsFragment")
+        fun openAboutUsFragment(mContext: Context?) {
+            AppUtil.openDetailDialog(mContext)
         }
     }
 }

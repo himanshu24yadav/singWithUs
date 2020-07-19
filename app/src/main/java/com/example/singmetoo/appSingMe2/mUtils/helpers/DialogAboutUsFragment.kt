@@ -12,20 +12,15 @@ import com.example.singmetoo.R
 import com.example.singmetoo.appSingMe2.mUtils.songsRepository.SongModel
 import com.example.singmetoo.databinding.LayoutDialogDetailBinding
 
-class DialogDetailFragment : DialogFragment() {
+class DialogAboutUsFragment : DialogFragment() {
 
     private var mContext: Context? = null
-    private var mSongModel: SongModel? = null
     private lateinit var mLayoutBinding: LayoutDialogDetailBinding
-
-    fun setData(songModel: SongModel?) {
-        mSongModel = songModel
-    }
 
     override fun onStart() {
         super.onStart()
-        val width = ViewGroup.LayoutParams.WRAP_CONTENT
-        val height = ViewGroup.LayoutParams.WRAP_CONTENT
+        val width = ViewGroup.LayoutParams.MATCH_PARENT
+        val height = ViewGroup.LayoutParams.MATCH_PARENT
         val window = dialog?.window
         window?.setLayout(width, height)
     }
@@ -47,32 +42,19 @@ class DialogDetailFragment : DialogFragment() {
             labelsDialog.window!!.setGravity(Gravity.CENTER)
             labelsDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             labelsDialog.window!!.attributes.windowAnimations = R.style.DialogAnimation
-            labelsDialog.setCanceledOnTouchOutside(true)
         }
         return labelsDialog
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mLayoutBinding = DataBindingUtil.inflate(inflater, R.layout.layout_dialog_detail, container, false)
-        init()
         return mLayoutBinding.root
     }
 
-    private fun init() {
-
-        mLayoutBinding.dialogIv.setAlbumImage(AppUtil.getImageUriFromAlbum(mSongModel?.songAlbumId ?: -1))
-
-        mLayoutBinding.songTitleTv.text = mSongModel?.songTitle ?: ""
-        mLayoutBinding.songTitleTv.visibility = if(AppUtil.checkIsNotNull(mSongModel?.songTitle)) View.VISIBLE else View.GONE
-        mLayoutBinding.songTitleTv.isSelected = true
-
-        mLayoutBinding.songArtistTv.text = mSongModel?.songArtist ?: ""
-        mLayoutBinding.songArtistTv.visibility = if(AppUtil.checkIsNotNull(mSongModel?.songArtist)) View.VISIBLE else View.GONE
-        mLayoutBinding.songArtistTv.isSelected = true
-
-        mLayoutBinding.songAlbumTv.text = mSongModel?.songAlbum ?: ""
-        mLayoutBinding.songAlbumTv.visibility = if(AppUtil.checkIsNotNull(mSongModel?.songAlbum)) View.VISIBLE else View.GONE
-        mLayoutBinding.songAlbumTv.isSelected = true
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mLayoutBinding.backIv.setOnClickListener {
+            dismiss()
+        }
     }
-
 }
