@@ -12,12 +12,12 @@
    
 #  What We Used
    
-   -  Kotlin coroutine for all the background tasks
-   -  Foreground service for playing songs even when the application is in the background
+   -  Kotlin Couritines for performing the DB and background operations
+   -  Foreground service for streaming music even when the application is in the background
    -  Fresco for rendering images
-   -  RoomDB for caching songs data
+   -  Room integration for caching songs.
    -  Used MVVM as an architecture component
-   -  ExoPlayer Library for playing songs and keep application UI sync with the player
+   -  Use of exoPlayer library for music streaming
    -  Firebase for login feature
    
 #  Requirements
