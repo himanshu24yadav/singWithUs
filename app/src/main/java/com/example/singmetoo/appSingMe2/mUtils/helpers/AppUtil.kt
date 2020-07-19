@@ -92,7 +92,6 @@ class AppUtil {
         fun openDetailDialog(mContext:Context?,songModel:SongModel? = null) {
             val dialogFragment = DialogDetailFragment()
             dialogFragment.setStyle(DialogFragment.STYLE_NO_FRAME, R.style.Theme_AppCompat)
-            dialogFragment.isCancelable =true
             dialogFragment.setData(songModel)
 
             if (!dialogFragment.isAdded && !dialogFragment.isVisible && mContext!=null) dialogFragment.show((mContext as AppCompatActivity).supportFragmentManager, "")

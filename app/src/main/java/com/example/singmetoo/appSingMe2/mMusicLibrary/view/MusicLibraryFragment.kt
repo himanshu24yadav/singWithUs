@@ -204,10 +204,4 @@ class MusicLibraryFragment : BaseFragment(), MusicLibraryAdapterCallback {
             commonBaseInterface?.playAudio(newSelectedSongForPlaying, false)
         }
     }
-
-    override fun showSongInfo(selectedSongForPlaying: SongModel?) {
-        selectedSongForPlaying?.let {
-            AppUtil.openDetailDialog(mContext,it)
-        }
-    }
 }

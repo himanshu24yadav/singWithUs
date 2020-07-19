@@ -89,10 +89,6 @@ class HomeFragment : BaseFragment(),HomeItemsInterface {
         }
     }
 
-    fun onBackPressed() {
-        AppUtil.showToast(mContext,"HomeFrag")
-    }
-
     override fun openSelectedScreen(view: View?,itemModel: HomeContentModel?) {
         itemModel?.let {
             when(itemModel.title) {

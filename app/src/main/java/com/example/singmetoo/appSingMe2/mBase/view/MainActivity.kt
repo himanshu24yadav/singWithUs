@@ -58,6 +58,7 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
     private var mSongViewModel : SongsViewModel? = null
     private var mAudioPlayService: AudioPlayService? = null
     private var mSongsListFromDevice: ArrayList<SongModel>? = ArrayList()
+    private var mToExit = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -383,12 +384,19 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
             return
         }
 
-        when (val baseFragment: BaseFragment? = supportFragmentManager.findFragmentById(R.id.main_activity_container) as? BaseFragment) {
+        when (supportFragmentManager.findFragmentById(R.id.main_activity_container) as? BaseFragment) {
             is HomeFragment -> {
-                if(mBottomSheetAudioPlayerBehaviour?.state == BottomSheetBehavior.STATE_EXPANDED) {
-                    mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
-                } else {
-                    (baseFragment as? HomeFragment)?.onBackPressed()
+                when {
+                    mBottomSheetAudioPlayerBehaviour?.state == BottomSheetBehavior.STATE_EXPANDED -> {
+                        mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
+                    }
+                    mToExit -> {
+                        finish()
+                    }
+                    else -> {
+                        AppUtil.showToast(this,"Press again to exit")
+                        mToExit = true
+                    }
                 }
             }
             else -> {
@@ -432,9 +440,11 @@ class MainActivity : BaseActivity(), CommonBaseInterface,NavigationDrawerInterfa
 
     override fun showBottomAudioPlayer(songToPlay:SongModel?) {
         songToPlay?.let {
-            updateAudioPlayerDetails(it,!mBottomAudioPlayerBinding.exoPlayerView.player?.isSongPlaying()!!)
-            mBottomAudioPlayerBinding.audioPlayerMainCl.visibility = View.VISIBLE
-            mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
+            mBottomAudioPlayerBinding.exoPlayerView.player?.let { player ->
+                updateAudioPlayerDetails(it,!player.isSongPlaying())
+                mBottomAudioPlayerBinding.audioPlayerMainCl.visibility = View.VISIBLE
+                mBottomSheetAudioPlayerBehaviour?.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
         }
     }
 

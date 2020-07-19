@@ -22,6 +22,7 @@
         <activity
             android:name=".appSingMe2.mBase.view.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop">
         </activity>
 
@@ -31,6 +32,7 @@
 
         <activity
             android:name=".appSingMe2.mLogin.LoginActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,8 +40,7 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".audioPlayerHelper.AudioPlayService"
-                 android:exported="false"/>
+        <service android:name=".audioPlayerHelper.AudioPlayService" />
 
     </application>
 

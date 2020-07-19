@@ -6,14 +6,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:cardElevation="8dp"
-        app:cardCornerRadius="18dp">
+        app:cardCornerRadius="8dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="20dp"
-            android:background="@drawable/bg_base_gradient">
-
+            android:background="@color/white">
+            
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/dialog_iv"
                 android:layout_width="48dp"
@@ -21,13 +21,15 @@
                 android:src="@drawable/bg_default_playing_song"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/song_title_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:singleLine="true"
                 style="@style/dialog_text_appearance"
                 app:layout_constraintTop_toBottomOf="@+id/dialog_iv" />
 
@@ -35,6 +37,9 @@
                 android:id="@+id/song_artist_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:singleLine="true"
                 style="@style/dialog_text_appearance"
                 app:layout_constraintTop_toBottomOf="@+id/song_title_tv"
                 />
@@ -43,6 +48,9 @@
                 android:id="@+id/song_album_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="marquee"
+                android:gravity="center"
+                android:singleLine="true"
                 app:layout_constraintTop_toBottomOf="@+id/song_artist_tv"
                 style="@style/dialog_text_appearance" />
 

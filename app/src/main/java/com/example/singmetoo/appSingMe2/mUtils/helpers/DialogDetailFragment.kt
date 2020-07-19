@@ -1,11 +1,9 @@
 package com.example.singmetoo.appSingMe2.mUtils.helpers
 
-import android.app.ActionBar
 import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
@@ -49,6 +47,7 @@ class DialogDetailFragment : DialogFragment() {
             labelsDialog.window!!.setGravity(Gravity.CENTER)
             labelsDialog.window!!.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             labelsDialog.window!!.attributes.windowAnimations = R.style.DialogAnimation
+            labelsDialog.setCanceledOnTouchOutside(true)
         }
         return labelsDialog
     }
