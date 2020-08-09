@@ -12,7 +12,7 @@
    
 #  What We Used
    
-   -  Kotlin Couritines for performing the DB and background operations
+   -  Kotlin Coroutines for performing the DB and background operations
    -  Foreground service for streaming music even when the application is in the background
    -  Fresco for rendering images
    -  Room integration for caching songs.
